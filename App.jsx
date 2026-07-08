@@ -16,19 +16,19 @@ import {
 
 /* ---------- Design tokens ---------- */
 const T = {
-  bg: "#F2F5FC",
+  bg: "#F1F5F9",
   surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FA",
-  ink: "#050505",
-  inkSoft: "#65676B",
-  inkFaint: "#8A8D91",
-  line: "#E4E6EB",
-  brand: "#4A7FE5",
+  surfaceAlt: "#F8FAFF",
+  ink: "#0F172A",
+  inkSoft: "#64748B",
+  inkFaint: "#94A3B8",
+  line: "#E2E8F0",
+  brand: "#3B82F6",
   brandInk: "#0C5FD6",
-  live: "#E41E3F",
-  gold: "#F7B928",
+  live: "#EF4444",
+  gold: "#F59E0B",
   navBg: "#FFFFFF",
-  sideHover: "#F2F2F2",
+  sideHover: "#F8FAFF",
 };
 
 const CATEGORIES = {
@@ -1256,8 +1256,8 @@ export default function App() {
       <header className="sn-topbar">
         {/* Logo */}
         <div className="sn-topbar-logo">
-          <span style={{ display:"inline-flex", padding:7, borderRadius:12, background:"rgba(255,255,255,.2)", color:"#fff", boxShadow:"0 0 0 1.5px rgba(255,255,255,.35)" }}><Radio size={18} strokeWidth={2.8}/></span>
-          <span dir="ltr" style={{ fontSize:20, color:"#fff", fontWeight:900 }}>Status<span style={{ color:"#A5C8FF" }}> Now</span></span>
+          <span style={{ display:"inline-flex", padding:7, borderRadius:10, background:"#3B82F6", color:"#fff", boxShadow:"0 2px 8px rgba(59,130,246,.35)" }}><Radio size={18} strokeWidth={2.8}/></span>
+          <span dir="ltr" style={{ fontSize:19, color:"#0F172A", fontWeight:900, letterSpacing:"-.3px" }}>Status<span style={{ color:"#3B82F6" }}> Now</span></span>
         </div>
         {/* Center tabs — desktop */}
         <div className="sn-topbar-tabs">
@@ -1269,7 +1269,7 @@ export default function App() {
         </div>
         {/* Right actions */}
         <div className="sn-topbar-actions">
-          <button className="sn-topbar-btn" onClick={()=>setModal({type:"createMenu"})} title="פרסם עדכון" style={{background:"linear-gradient(135deg,#FBBF24,#F59E0B)",color:"#fff",boxShadow:"0 4px 14px rgba(251,191,36,.5)"}}><Plus size={20} strokeWidth={2.6}/></button>
+          <button onClick={()=>setModal({type:"createMenu"})} title="פרסם עדכון" style={{display:"flex",alignItems:"center",gap:7,border:"none",background:"#3B82F6",color:"#fff",borderRadius:10,padding:"8px 16px",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 2px 8px rgba(59,130,246,.3)",transition:"all .12s"}}><Plus size={17} strokeWidth={2.6}/>פרסם</button>
           <button className="sn-topbar-btn" onClick={()=>goTab("profile")} title="פרופיל"><Avatar user={me} size={36}/></button>
         </div>
       </header>
@@ -1280,18 +1280,15 @@ export default function App() {
 
         {/* LEFT SIDEBAR (desktop only) */}
         <aside className="sn-sidebar">
-          {/* profile mini-card on dark bg */}
-          <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 8px 14px", marginBottom:4 }}>
+          {/* profile mini-card on white bg */}
+          <div style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 6px 14px", marginBottom:2 }}>
             <button onClick={()=>goTab("profile")} style={{border:"none",background:"none",padding:0,cursor:"pointer",position:"relative"}}>
-              <Avatar user={me} size={46}/>
-              <span style={{position:"absolute",bottom:1,insetInlineEnd:1,width:13,height:13,borderRadius:999,background:"#2ECC71",border:"2px solid #5B8DEF"}}/>
+              <Avatar user={me} size={44}/>
+              <span style={{position:"absolute",bottom:1,insetInlineEnd:1,width:11,height:11,borderRadius:999,background:"#22C55E",border:"2px solid #fff"}}/>
             </button>
-            <div>
-              <div style={{fontWeight:800,fontSize:15,color:"#fff"}}>{me.name}</div>
-              <div style={{fontSize:12,color:"rgba(255,255,255,.6)",marginTop:1,display:"flex",alignItems:"center",gap:4}}>
-                <span style={{width:6,height:6,borderRadius:999,background:"#2ECC71",display:"inline-block"}}/>
-                פעיל עכשיו
-              </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:14.5,color:"#0F172A",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{me.name}</div>
+              <div style={{fontSize:12,color:"#64748B",marginTop:1}}>{me.city}</div>
             </div>
           </div>
           <div className="sn-nav-divider"/>
@@ -1310,8 +1307,8 @@ export default function App() {
             ))}
           </nav>
           <div className="sn-nav-divider" style={{marginTop:"auto"}}/>
-          <button className="sn-nav-btn" style={{color:"rgba(255,180,180,.85)"}} onClick={()=>{setAuthed(false);setAuthScreen("login");}}>
-            <span className="sn-nav-icon" style={{background:"rgba(239,68,68,.25)"}}><LogOut size={18} color="#FCA5A5"/></span>
+          <button className="sn-nav-btn" style={{color:"#EF4444",marginTop:"auto"}} onClick={()=>{setAuthed(false);setAuthScreen("login");}}>
+            <span className="sn-nav-icon" style={{background:"#FEF2F2"}}><LogOut size={17} color="#EF4444"/></span>
             התנתקות
           </button>
         </aside>
@@ -1354,40 +1351,40 @@ export default function App() {
         {/* ── RIGHT PANEL (desktop only) ── */}
         <div className="sn-right-panel">
           {/* categories card — glass on violet */}
-          <div style={{background:"rgba(255,255,255,.1)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(255,255,255,.2)",padding:"14px 16px",marginBottom:14,boxShadow:"0 8px 24px rgba(0,0,0,.2)"}}>
-            <div style={{fontWeight:800,fontSize:15,color:"#fff",marginBottom:12,display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontSize:18}}>📊</span> קטגוריות פעילות
+          <div style={{background:"#fff",borderRadius:12,border:"1px solid #E2E8F0",padding:"14px 14px",marginBottom:12,boxShadow:"0 1px 4px rgba(15,23,42,.05)"}}>
+            <div style={{fontWeight:700,fontSize:13,color:"#94A3B8",letterSpacing:".5px",textTransform:"uppercase",marginBottom:10}}>
+              קטגוריות פעילות
             </div>
             {Object.entries(CATEGORIES).map(([k,c])=>{
               const count = data.statuses.filter(s=>s.category===k&&freshness(s.createdAt,s.expiresAt)>0).length;
               if(!count) return null;
               return (
-                <div key={k} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.12)",cursor:"pointer"}} onClick={()=>setCatFilter(catFilter===k?null:k)}>
-                  <span style={{width:34,height:34,borderRadius:10,background:c.color,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:`0 4px 10px ${c.color}66`}}>
-                    {React.createElement(c.Icon,{size:16,color:"#fff"})}
+                <div key={k} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 0",borderBottom:"1px solid #F1F5F9",cursor:"pointer"}} onClick={()=>setCatFilter(catFilter===k?null:k)}>
+                  <span style={{width:32,height:32,borderRadius:8,background:c.color+"15",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {React.createElement(c.Icon,{size:15,color:c.color})}
                   </span>
-                  <div style={{flex:1}}>
-                    <div style={{fontWeight:700,fontSize:13,color:"#fff"}}>{c.he}</div>
-                    <div style={{fontSize:11.5,color:"rgba(255,255,255,.6)"}}>{count} פעיל{count!==1?"ים":""}</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontWeight:600,fontSize:13,color:"#0F172A"}}>{c.he}</div>
+                    <div style={{fontSize:11,color:"#94A3B8"}}>{count} פעיל{count!==1?"ים":""}</div>
                   </div>
-                  {catFilter===k && <Check size={15} color="#60A5FA"/>}
+                  {catFilter===k && <Check size={14} color="#3B82F6"/>}
                 </div>
               );
             })}
           </div>
           {/* top reporters — glass on violet */}
-          <div style={{background:"rgba(255,255,255,.1)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(255,255,255,.2)",padding:"14px 16px",boxShadow:"0 8px 24px rgba(0,0,0,.2)"}}>
-            <div style={{fontWeight:800,fontSize:15,color:"#fff",marginBottom:12,display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontSize:18}}>🏆</span> מדווחים מובילים
+          <div style={{background:"#fff",borderRadius:12,border:"1px solid #E2E8F0",padding:"14px 14px",boxShadow:"0 1px 4px rgba(15,23,42,.05)"}}>
+            <div style={{fontWeight:700,fontSize:13,color:"#94A3B8",letterSpacing:".5px",textTransform:"uppercase",marginBottom:10}}>
+              מדווחים מובילים
             </div>
             {[...data.users].sort((a,b)=>b.reputation-a.reputation).slice(0,4).map(u=>(
-              <div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.12)",cursor:"pointer"}} onClick={()=>{openUser(u.id);}}>
-                <Avatar user={u} size={38}/>
-                <div style={{flex:1}}>
-                  <div style={{fontWeight:700,fontSize:13,color:"#fff"}}>{u.name}</div>
-                  <div style={{fontSize:11.5,color:"rgba(255,255,255,.6)"}}>{u.city} · {u.reputation} נק׳</div>
+              <div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 0",borderBottom:"1px solid #F1F5F9",cursor:"pointer"}} onClick={()=>{openUser(u.id);}}>
+                <Avatar user={u} size={34}/>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontWeight:600,fontSize:13,color:"#0F172A",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{u.name}</div>
+                  <div style={{fontSize:11,color:"#94A3B8"}}>{u.city} · {u.reputation} נק׳</div>
                 </div>
-                <Award size={15} color="#FBBF24"/>
+                <Award size={14} color="#F59E0B"/>
               </div>
             ))}
           </div>
@@ -1423,11 +1420,11 @@ export default function App() {
 /* app frame — social-network layout, RTL */
 function Shell({ children }) {
   return (
-    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#F2F5FC", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
+    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#F1F5F9", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
         *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #F2F5FC; }
+        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #F1F5F9; }
         .sn-scroll-x::-webkit-scrollbar{display:none} .sn-scroll-x{scrollbar-width:none}
         ::-webkit-scrollbar{width:0}
         @keyframes snPing{75%,100%{transform:scale(2.2);opacity:0}}
@@ -1436,65 +1433,49 @@ function Shell({ children }) {
         @keyframes snUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
         input,textarea,select{font-family:inherit}
 
-        /* ═══ TOP NAV BAR ═══ */
+        /* ═══ TOP NAV BAR — clean white ═══ */
         .sn-topbar {
-          position: fixed; top: 0; left: 0; right: 0; height: 60px;
-          background: linear-gradient(135deg, #4169D4 0%, #5B8DEF 45%, #7B6CE6 100%);
+          position: fixed; top: 0; left: 0; right: 0; height: 58px;
+          background: #ffffff;
+          border-bottom: 1px solid #E2E8F0;
           display: flex; align-items: center; justify-content: space-between;
-          padding: 0 20px; z-index: 100;
-          box-shadow: 0 4px 20px rgba(65,105,212,.22);
-        }
-        /* subtle shimmer line at bottom */
-        .sn-topbar::after {
-          content: '';
-          position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-          background: linear-gradient(90deg, #93C5FD, #C4B5FD, #F9A8D4, #6EE7B7, #FDE68A);
+          padding: 0 24px; z-index: 100;
+          box-shadow: 0 1px 3px rgba(0,0,0,.06);
         }
         .sn-topbar-logo {
-          display: flex; align-items: center; gap: 9px;
-          font-weight: 900; font-size: 22px; color: #fff; letter-spacing: -.5px;
-          text-decoration: none;
+          display: flex; align-items: center; gap: 10px;
+          font-weight: 900; font-size: 20px; color: #0F172A; letter-spacing: -.5px;
+          text-decoration: none; flex-shrink: 0;
         }
-        .sn-topbar-logo span { text-shadow: 0 2px 8px rgba(0,0,0,.2); }
         .sn-topbar-tabs {
-          display: none; align-items: center; gap: 4px;
+          display: none; align-items: center; gap: 2px;
         }
         .sn-topbar-tab {
-          border: none; background: rgba(255,255,255,.08); cursor: pointer;
-          width: 108px; height: 44px; border-radius: 12px;
+          border: none; background: none; cursor: pointer;
+          padding: 0 20px; height: 58px; border-radius: 0;
           display: flex; align-items: center; justify-content: center;
-          color: rgba(255,255,255,.75); transition: all .15s;
-          position: relative;
+          color: #64748B; font-size: 13px; font-weight: 600;
+          font-family: inherit; transition: color .12s;
+          position: relative; white-space: nowrap;
         }
-        .sn-topbar-tab:hover {
-          background: rgba(255,255,255,.18);
-          color: #fff;
-        }
-        .sn-topbar-tab.active {
-          background: rgba(255,255,255,.22);
-          color: #fff;
-          box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.3);
-        }
+        .sn-topbar-tab:hover { color: #3B82F6; }
+        .sn-topbar-tab.active { color: #3B82F6; font-weight: 700; }
         .sn-topbar-tab.active::after {
-          content: ''; position: absolute; bottom: -6px; left: 20%; right: 20%;
-          height: 3px; background: #fff; border-radius: 2px;
+          content: ''; position: absolute; bottom: 0; left: 12px; right: 12px;
+          height: 2px; background: #3B82F6; border-radius: 2px 2px 0 0;
         }
         .sn-topbar-actions { display: flex; align-items: center; gap: 8px; }
         .sn-topbar-btn {
-          width: 40px; height: 40px; border-radius: 50%; border: none;
-          background: rgba(255,255,255,.15); color: #fff;
+          width: 38px; height: 38px; border-radius: 10px; border: none;
+          background: #F1F5F9; color: #475569;
           display: flex; align-items: center; justify-content: center;
-          cursor: pointer; flex-shrink: 0; transition: all .15s;
-          backdrop-filter: blur(4px);
+          cursor: pointer; flex-shrink: 0; transition: all .12s;
         }
-        .sn-topbar-btn:hover {
-          background: rgba(255,255,255,.28);
-          box-shadow: 0 0 0 2px rgba(255,255,255,.3);
-        }
+        .sn-topbar-btn:hover { background: #E2E8F0; color: #0F172A; }
 
         /* ═══ PAGE LAYOUT BELOW TOPBAR ═══ */
         .sn-page {
-          padding-top: 60px;
+          padding-top: 58px;
           min-height: 100vh;
           display: flex;
           justify-content: center;
@@ -1510,7 +1491,7 @@ function Shell({ children }) {
         .sn-compose-wrap {
           flex-shrink: 0;
           padding: 10px 12px 0;
-          background: #F2F5FC;
+          background: #F1F5F9;
         }
         .sn-feed-area {
           flex: 1; padding: 10px 12px 96px;
@@ -1526,7 +1507,7 @@ function Shell({ children }) {
           /* page takes exactly the viewport below the topbar — no page scroll */
           .sn-page {
             position: fixed;
-            top: 60px; left: 0; right: 0; bottom: 0;
+            top: 58px; left: 0; right: 0; bottom: 0;
             padding-top: 0;
             max-width: 100%;
             overflow: hidden;
@@ -1547,18 +1528,18 @@ function Shell({ children }) {
           /* both sidebars: fill height, don't scroll */
           .sn-sidebar {
             display: flex; flex-direction: column;
-            width: 280px; flex-shrink: 0;
+            width: 240px; flex-shrink: 0;
             height: 100%;
-            overflow-y: auto; padding: 12px 10px;
-            background: linear-gradient(180deg, #4A72D4 0%, #5B8DEF 55%, #7AAAF5 100%);
-            box-shadow: 4px 0 20px rgba(74,114,212,.15);
+            overflow-y: auto; padding: 16px 10px;
+            background: #ffffff;
+            border-left: 1px solid #E2E8F0;
           }
           .sn-sidebar::-webkit-scrollbar { display: none; }
 
           /* center: flex column — compose frozen top, feed scrolls below */
           .sn-main {
             flex: 1;
-            max-width: 590px;
+            max-width: 820px;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -1567,7 +1548,7 @@ function Shell({ children }) {
           .sn-compose-wrap {
             flex-shrink: 0;
             padding: 12px 0 0;
-            background: #F2F5FC;
+            background: #F1F5F9;
           }
           .sn-feed-area {
             flex: 1;
@@ -1579,11 +1560,11 @@ function Shell({ children }) {
 
           /* right panel: fixed height, scrolls internally if needed */
           .sn-right-panel {
-            width: 260px; flex-shrink: 0;
+            width: 220px; flex-shrink: 0;
             height: 100%;
-            overflow-y: auto; padding: 14px 10px;
-            background: linear-gradient(180deg, #6272D4 0%, #7B82EF 55%, #9B8EF5 100%);
-            box-shadow: -4px 0 20px rgba(98,114,212,.15);
+            overflow-y: auto; padding: 16px 10px;
+            background: #ffffff;
+            border-right: 1px solid #E2E8F0;
           }
           .sn-right-panel::-webkit-scrollbar { display: none; }
 
@@ -1591,137 +1572,112 @@ function Shell({ children }) {
           .sn-bottom-nav { display: none !important; }
         }
 
-        /* ═══ WIDE DESKTOP ≥1100px ═══ */
-        @media (min-width: 1100px) {
-          .sn-sidebar { width: 320px; }
-          .sn-right-panel { width: 320px; }
+        /* ═══ WIDE DESKTOP ≥1280px ═══ */
+        @media (min-width: 1280px) {
+          .sn-sidebar { width: 260px; }
+          .sn-right-panel { width: 240px; }
         }
 
         /* ═══ SIDEBAR NAV BUTTONS ═══ */
         .sn-nav-btn {
-          width: 100%; display: flex; align-items: center; gap: 12px;
-          border: none; background: rgba(255,255,255,.07); border-radius: 12px;
-          padding: 10px 12px; cursor: pointer; font-family: inherit;
-          font-size: 14.5px; font-weight: 600; color: rgba(255,255,255,.82);
-          transition: all .15s; margin-bottom: 3px; text-align: start;
+          width: 100%; display: flex; align-items: center; gap: 10px;
+          border: none; background: none; border-radius: 10px;
+          padding: 9px 10px; cursor: pointer; font-family: inherit;
+          font-size: 14px; font-weight: 500; color: #475569;
+          transition: all .12s; margin-bottom: 2px; text-align: start;
         }
         .sn-nav-btn:hover {
-          background: rgba(255,255,255,.16);
-          color: #fff;
-          transform: translateX(-2px);
+          background: #F1F5F9;
+          color: #0F172A;
         }
         .sn-nav-btn.active {
-          background: rgba(255,255,255,.22);
-          color: #fff; font-weight: 800;
-          box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.25);
+          background: #EFF6FF;
+          color: #3B82F6; font-weight: 700;
         }
         .sn-nav-icon {
-          width: 36px; height: 36px; border-radius: 10px;
-          background: rgba(255,255,255,.15);
+          width: 34px; height: 34px; border-radius: 9px;
+          background: #F1F5F9;
           display: flex; align-items: center; justify-content: center;
-          flex-shrink: 0; transition: background .15s;
+          flex-shrink: 0; transition: background .12s; color: #64748B;
         }
         .sn-nav-btn.active .sn-nav-icon {
-          background: rgba(255,255,255,.3);
-          box-shadow: 0 4px 10px rgba(0,0,0,.2);
+          background: #DBEAFE; color: #3B82F6;
         }
         .sn-nav-divider {
-          height: 1px; background: rgba(255,255,255,.15);
-          margin: 8px 4px;
+          height: 1px; background: #E2E8F0;
+          margin: 10px 4px;
         }
 
-        /* ═══ POST CARD (Facebook-style) ═══ */
+        /* ═══ POST CARD ═══ */
         .sn-card {
-          background: #fff; border-radius: 10px;
-          border: 1px solid #E4E6EB;
-          margin-bottom: 12px;
-          box-shadow: 0 1px 2px rgba(0,0,0,.06);
+          background: #fff; border-radius: 14px;
+          border: 1px solid #E2E8F0;
+          margin-bottom: 14px;
+          box-shadow: 0 1px 4px rgba(15,23,42,.05);
           overflow: hidden;
+          transition: box-shadow .15s, transform .12s;
         }
-        .sn-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+        .sn-card:hover {
+          box-shadow: 0 4px 16px rgba(15,23,42,.09);
+          transform: translateY(-1px);
+        }
 
         /* ═══ COMPOSE BOX ═══ */
         .sn-compose-wrap {
-          padding: 12px 12px 0;
+          padding: 14px 14px 0;
         }
         .sn-compose {
           background: #fff;
-          border-radius: 16px;
-          border: none;
+          border-radius: 14px;
+          border: 1px solid #E2E8F0;
           padding: 14px 16px 12px;
-          margin-bottom: 0;
-          box-shadow: 0 2px 12px rgba(0,0,0,.10), 0 0 0 1.5px rgba(24,119,242,.12);
-          position: relative;
-          overflow: hidden;
+          box-shadow: 0 1px 4px rgba(15,23,42,.05);
+          position: relative; overflow: hidden;
         }
+        /* thin brand accent top */
         .sn-compose::before {
           content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 4px;
-          background: linear-gradient(90deg, #4A7FE5, #45BD62, #F7B928, #E41E3F, #7B6CE6);
-          border-radius: 16px 16px 0 0;
+          position: absolute; top: 0; left: 0; right: 0; height: 3px;
+          background: linear-gradient(90deg, #3B82F6, #06B6D4, #10B981, #F59E0B, #EF4444, #8B5CF6);
+          border-radius: 14px 14px 0 0;
         }
         .sn-compose-btn {
-          flex: 1; border: 1.5px solid #E4E6EB;
-          background: #F8F9FF;
-          border-radius: 24px; padding: 10px 18px;
-          text-align: start; color: #65676B; font-size: 15px;
-          cursor: pointer; font-family: inherit;
-          transition: all .15s;
+          flex: 1; border: 1px solid #E2E8F0;
+          background: #F8FAFC;
+          border-radius: 999px; padding: 9px 18px;
+          text-align: start; color: #94A3B8; font-size: 14.5px;
+          cursor: pointer; font-family: inherit; transition: all .12s;
         }
         .sn-compose-btn:hover {
-          background: #EEF2FF;
-          border-color: #4A7FE5;
-          color: #4A7FE5;
+          background: #EFF6FF; border-color: #BFDBFE; color: #3B82F6;
         }
         /* quick action buttons */
         .sn-quick-btn {
-          flex: 1; border: none; border-radius: 12px;
-          padding: 9px 6px;
+          flex: 1; border: 1px solid #E2E8F0; border-radius: 10px;
+          padding: 8px 6px;
           display: flex; align-items: center; justify-content: center; gap: 6px;
-          font-size: 13px; font-weight: 800;
+          font-size: 13px; font-weight: 600; background: #fff;
           cursor: pointer; font-family: inherit;
-          transition: all .15s; white-space: nowrap;
+          transition: all .12s; white-space: nowrap; color: #64748B;
         }
-        .sn-quick-green {
-          background: linear-gradient(135deg, #D4F7E4, #A8EFC9);
-          color: #1A7A45;
-        }
-        .sn-quick-green:hover {
-          background: linear-gradient(135deg, #45BD62, #22A94A);
-          color: #fff;
-          box-shadow: 0 4px 12px rgba(69,189,98,.4);
-        }
-        .sn-quick-amber {
-          background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-          color: #92400E;
-        }
-        .sn-quick-amber:hover {
-          background: linear-gradient(135deg, #F59E0B, #D97706);
-          color: #fff;
-          box-shadow: 0 4px 12px rgba(245,158,11,.4);
-        }
-        .sn-quick-red {
-          background: linear-gradient(135deg, #FEE2E2, #FECACA);
-          color: #991B1B;
-        }
-        .sn-quick-red:hover {
-          background: linear-gradient(135deg, #EF4444, #DC2626);
-          color: #fff;
-          box-shadow: 0 4px 12px rgba(239,68,68,.4);
-        }
+        .sn-quick-btn:hover { background: #F8FAFC; border-color: #CBD5E1; color: #0F172A; }
+        .sn-quick-green  { color: #16A34A; }
+        .sn-quick-green:hover  { background: #F0FDF4; border-color: #BBF7D0; color: #15803D; }
+        .sn-quick-amber  { color: #D97706; }
+        .sn-quick-amber:hover  { background: #FFFBEB; border-color: #FDE68A; color: #B45309; }
+        .sn-quick-red    { color: #DC2626; }
+        .sn-quick-red:hover    { background: #FEF2F2; border-color: #FECACA; color: #B91C1C; }
 
         /* ═══ REACTION BUTTONS ═══ */
         .sn-react-btn {
           flex: 1; border: none; background: none;
           display: flex; align-items: center; justify-content: center; gap: 6px;
-          padding: 8px; border-radius: 8px; cursor: pointer;
-          font-size: 14px; font-weight: 600; color: #65676B;
-          font-family: inherit; transition: background .12s;
+          padding: 9px 8px; border-radius: 8px; cursor: pointer;
+          font-size: 13.5px; font-weight: 600; color: #64748B;
+          font-family: inherit; transition: all .12s;
         }
-        .sn-react-btn:hover { background: #F2F2F2; }
-        .sn-react-btn.active { color: #4A7FE5; }
+        .sn-react-btn:hover { background: #F8FAFC; color: #0F172A; }
+        .sn-react-btn.active { color: #3B82F6; background: #EFF6FF; }
       `}</style>
       {children}
     </div>

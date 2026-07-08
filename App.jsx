@@ -934,7 +934,7 @@ const uploadBtnStyle = {
 function CreateStatus({ me, myLoc, groups, presetGroup, onClose, onCreate, canPost, cooldown }) {
   const [text, setText] = useState("");
   const [cat, setCat] = useState("general");
-  const [locName, setLocName] = useState(myLoc?.name || "תל אביב");
+  const [locName, setLocName] = useState(myLoc?.name || "");
   const [loc, setLoc] = useState(myLoc || CITIES[0]);
   const [media, setMedia] = useState(null);
   const [mediaErr, setMediaErr] = useState("");
@@ -992,10 +992,8 @@ function CreateStatus({ me, myLoc, groups, presetGroup, onClose, onCreate, canPo
         </div>
       </Field>
 
-      <Field label="מיקום" hint="בחר מיקום ידני, או שתף מיקום GPS מהכפתור למטה.">
-        <select style={inputStyle} value={locName} onChange={(e) => { const c = CITIES.find((x) => x.name === e.target.value); setLocName(e.target.value); if (c) setLoc(c); }}>
-          {CITIES.map((c) => <option key={c.name}>{c.name}</option>)}
-        </select>
+      <Field label="מיקום (רשות)" hint="לדוגמה: רחוב דיזנגוף, תל אביב">
+        <input style={inputStyle} value={locName} onChange={(e) => setLocName(e.target.value)} placeholder="היכן זה קורה?" />
       </Field>
 
       <Field label="מדיה (רשות)" hint={`אפשר לצרף תמונה, או סרטון קצר של עד 15 שניות.`}>
@@ -1040,7 +1038,7 @@ function CreateStatus({ me, myLoc, groups, presetGroup, onClose, onCreate, canPo
 function CreateRequest({ me, myLoc, onClose, onCreate, canPost, cooldown }) {
   const [text, setText] = useState("");
   const [cat, setCat] = useState("general");
-  const [locName, setLocName] = useState("תל אביב");
+  const [locName, setLocName] = useState("");
   const [loc, setLoc] = useState(CITIES[0]);
   const [err, setErr] = useState("");
   const submit = () => {
@@ -1060,9 +1058,7 @@ function CreateRequest({ me, myLoc, onClose, onCreate, canPost, cooldown }) {
         </div>
       </Field>
       <Field label="על איזה מקום?">
-        <select style={inputStyle} value={locName} onChange={(e) => { const c = CITIES.find((x) => x.name === e.target.value); setLocName(e.target.value); if (c) setLoc(c); }}>
-          {CITIES.map((c) => <option key={c.name}>{c.name}</option>)}
-        </select>
+        <input style={inputStyle} value={locName} onChange={(e) => setLocName(e.target.value)} placeholder="לדוגמה: חוף גורדון, תל אביב" />
       </Field>
       {err && <div style={{ background: "#FEECEC", color: T.live, borderRadius: 10, padding: "9px 12px", fontSize: 13, marginBottom: 12, fontWeight: 600 }}>{err}</div>}
       <PrimaryButton onClick={submit}><HelpCircle size={17} /> פרסם בקשה</PrimaryButton>
@@ -1153,18 +1149,13 @@ function BottomNav({ tab, setTab, onCreate }) {
   const items = [
     { k: "feed", label: "פיד", Icon: Newspaper },
     { k: "map", label: "מפה", Icon: MapIcon },
-    { k: "create", label: "", Icon: Plus },
     { k: "requests", label: "בקשות", Icon: HelpCircle },
     { k: "groups", label: "קבוצות", Icon: Users },
+    { k: "profile", label: "פרופיל", Icon: UserIcon },
   ];
   return (
-    <div style={{ position: "absolute", bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, background: "rgba(255,255,255,.92)", backdropFilter: "blur(10px)", borderTop: `1px solid ${T.line}`, display: "flex", padding: "8px 6px calc(8px + env(safe-area-inset-bottom))", zIndex: 20 }}>
+    <div className="sn-bottom-nav" style={{ position: "fixed", bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, background: "rgba(255,255,255,.92)", backdropFilter: "blur(10px)", borderTop: `1px solid ${T.line}`, display: "flex", padding: "8px 6px calc(8px + env(safe-area-inset-bottom))", zIndex: 20, maxWidth: 430, margin: "0 auto" }}>
       {items.map((it) => {
-        if (it.k === "create") return (
-          <div key="create" style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-            <button onClick={onCreate} style={{ marginTop: -26, width: 56, height: 56, borderRadius: 999, background: T.brand, color: "#fff", border: "3px solid #fff", boxShadow: `0 10px 24px ${T.brand}66`, cursor: "pointer", display: "grid", placeItems: "center" }}><Plus size={28} strokeWidth={2.6} /></button>
-          </div>
-        );
         const active = tab === it.k;
         return (
           <button key={it.k} onClick={() => setTab(it.k)} style={{ flex: 1, border: "none", background: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, color: active ? T.brand : T.inkFaint, fontFamily: "inherit", padding: "4px 0" }}>
@@ -1209,8 +1200,8 @@ export default function App() {
   const [, setTick] = useState(0);
   useEffect(() => { const i = setInterval(() => setTick((t) => t + 1), 30000); return () => clearInterval(i); }, []);
 
-  // ask location once after login
-  useEffect(() => { if (authed && !askedLoc && !myLoc) { const t = setTimeout(() => setModal({ type: "locPrompt" }), 600); return () => clearTimeout(t); } }, [authed]);
+  // skip location prompt — go straight in
+  useEffect(() => { if (authed && !askedLoc) { setAskedLoc(true); setMyLoc({ ...CITIES[0], name: "תל אביב" }); } }, [authed]);
 
   /* ---- data mutations ---- */
   const likeStatus = (id) => setData((d) => ({ ...d, statuses: d.statuses.map((s) => s.id === id ? { ...s, likes: s.likes.includes(meId) ? s.likes.filter((x) => x !== meId) : [...s.likes, meId] } : s) }));
@@ -1263,23 +1254,73 @@ export default function App() {
 
   return (
     <Shell>
-      {/* header */}
-      <div style={{ position: "sticky", top: 0, zIndex: 15, background: "rgba(244,243,238,.9)", backdropFilter: "blur(8px)", padding: "14px 18px 8px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${T.line}` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 900, fontSize: 20, color: T.ink }}>
-          <span style={{ display: "inline-flex", padding: 6, borderRadius: 10, background: T.brand, color: "#fff" }}><Radio size={17} strokeWidth={2.8} /></span>
-          {titles[tab]}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <button onClick={() => myLoc ? setModal({ type: "manualLoc" }) : setModal({ type: "locPrompt" })} style={{ border: `1.5px solid ${T.line}`, background: T.surface, borderRadius: 999, padding: "6px 12px", fontSize: 12.5, fontWeight: 700, color: T.inkSoft, cursor: "pointer", fontFamily: "inherit", display: "inline-flex", alignItems: "center", gap: 5 }}>
-            <MapPin size={13} color={T.brand} /> {myLoc?.name || "מיקום"}
-          </button>
-          <button onClick={() => goTab("profile")} style={{ border: "none", background: "none", padding: 0, cursor: "pointer" }}><Avatar user={me} size={34} /></button>
+      {/* desktop sidebar + mobile layout */}
+      <div className="sn-desktop-layout">
+
+        {/* ── SIDEBAR (desktop only) ── */}
+        <aside className="sn-sidebar">
+          <div style={{ padding: "28px 20px 20px", borderBottom: `1px solid ${T.line}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9, fontWeight: 900, fontSize: 22, color: T.ink }}>
+              <span style={{ display: "inline-flex", padding: 8, borderRadius: 12, background: T.brand, color: "#fff" }}><Radio size={20} strokeWidth={2.8} /></span>
+              <span dir="ltr">Status<span style={{ color: T.brand }}> Now</span></span>
+            </div>
+          </div>
+          <nav style={{ padding: "14px 12px", flex: 1 }}>
+            {[
+              { k: "feed", label: "פיד", Icon: Newspaper },
+              { k: "map", label: "מפת אירועים", Icon: MapIcon },
+              { k: "requests", label: "בקשות מידע", Icon: HelpCircle },
+              { k: "groups", label: "קבוצות", Icon: Users },
+              { k: "profile", label: "הפרופיל שלי", Icon: UserIcon },
+            ].map(({ k, label, Icon }) => (
+              <button key={k} onClick={() => goTab(k)} style={{
+                width: "100%", display: "flex", alignItems: "center", gap: 12,
+                border: "none", background: tab === k ? `${T.brand}12` : "none",
+                color: tab === k ? T.brand : T.inkSoft, borderRadius: 13,
+                padding: "12px 14px", fontSize: 15, fontWeight: tab === k ? 800 : 600,
+                cursor: "pointer", fontFamily: "inherit", marginBottom: 4,
+              }}>
+                <Icon size={20} strokeWidth={tab === k ? 2.6 : 2} />
+                {label}
+              </button>
+            ))}
+          </nav>
+          <div style={{ padding: "14px 12px", borderTop: `1px solid ${T.line}` }}>
+            <button onClick={() => setModal({ type: "createMenu" })} style={{
+              width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 9,
+              border: "none", background: T.brand, color: "#fff", borderRadius: 14,
+              padding: "14px", fontSize: 15, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
+              boxShadow: `0 8px 20px ${T.brand}44`,
+            }}><Plus size={20} /> פרסם עדכון</button>
+            <button onClick={() => { setAuthed(false); setAuthScreen("login"); }} style={{ width: "100%", marginTop: 10, border: `1.5px solid ${T.line}`, background: "none", borderRadius: 12, padding: "10px", fontWeight: 700, fontSize: 13.5, cursor: "pointer", color: T.inkSoft, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: "inherit" }}><LogOut size={16} /> התנתקות</button>
+          </div>
+        </aside>
+
+        {/* ── MAIN CONTENT ── */}
+        <div className="sn-main">
+          {/* header — mobile only */}
+          <div className="sn-mobile-header" style={{ position: "sticky", top: 0, zIndex: 15, background: "rgba(244,243,238,.92)", backdropFilter: "blur(8px)", padding: "14px 18px 8px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${T.line}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 900, fontSize: 20, color: T.ink }}>
+              <span style={{ display: "inline-flex", padding: 6, borderRadius: 10, background: T.brand, color: "#fff" }}><Radio size={17} strokeWidth={2.8} /></span>
+              {titles[tab]}
+            </div>
+            <button onClick={() => goTab("profile")} style={{ border: "none", background: "none", padding: 0, cursor: "pointer" }}><Avatar user={me} size={34} /></button>
+          </div>
+
+          {/* scroll area */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 96px" }}>{screen}</div>
         </div>
       </div>
 
-      {/* scroll area */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 96px" }}>{screen}</div>
+      {/* ── FIXED FAB (mobile only) ── */}
+      <button className="sn-fab" onClick={() => setModal({ type: "createMenu" })} style={{
+        position: "fixed", bottom: "calc(72px + env(safe-area-inset-bottom))", insetInlineEnd: 20,
+        width: 58, height: 58, borderRadius: 999, background: T.brand, color: "#fff",
+        border: "none", boxShadow: `0 10px 28px ${T.brand}66`,
+        cursor: "pointer", display: "grid", placeItems: "center", zIndex: 30,
+      }}><Plus size={28} strokeWidth={2.6} /></button>
 
+      {/* ── BOTTOM NAV (mobile only) ── */}
       <BottomNav tab={tab} setTab={goTab} onCreate={() => setModal({ type: "createMenu" })} />
 
       {/* modals */}
@@ -1289,7 +1330,6 @@ export default function App() {
       {currentModal?.type === "createGroup" && <CreateGroup me={me} onClose={() => setModal(null)} onCreate={createGroup} />}
       {detailStatus && <StatusDetail s={detailStatus} data={data} me={me} onClose={() => setModal(null)} onLike={likeStatus} onComment={addComment} onUser={openUser} />}
       {detailRequest && <RequestDetail r={detailRequest} data={data} me={me} onClose={() => setModal(null)} onAnswer={addAnswer} onUser={openUser} />}
-      {currentModal?.type === "locPrompt" && <LocationPrompt onGPS={() => { setAskedLoc(true); setMyLoc({ ...CITIES[0], name: "תל אביב" }); setModal(null); showToast("מיקום עודכן: תל אביב 📍"); }} onManual={() => { setAskedLoc(true); setModal({ type: "manualLoc" }); }} onSkip={() => { setAskedLoc(true); setModal(null); }} />}
       {currentModal?.type === "manualLoc" && <ManualLocation onClose={() => setModal(null)} onPick={(c) => { setMyLoc({ ...c, name: c.name }); setAskedLoc(true); setModal(null); showToast(`מיקום עודכן: ${c.name} 📍`); }} />}
 
       <ToastView toast={toast} />
@@ -1297,24 +1337,69 @@ export default function App() {
   );
 }
 
-/* app frame — phone-sized, RTL */
+/* app frame — responsive RTL */
 function Shell({ children }) {
   return (
-    <div dir="rtl" lang="he" style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#E5E3DB", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
+    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#E5E3DB", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Rubik:wght@600;700;800&display=swap');
-        * { -webkit-tap-highlight-color: transparent; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         .sn-scroll-x::-webkit-scrollbar{display:none} .sn-scroll-x{scrollbar-width:none}
         ::-webkit-scrollbar{width:0}
         @keyframes snPing{75%,100%{transform:scale(2.2);opacity:0}}
         .sn-ping{animation:snPing 1.6s cubic-bezier(0,0,.2,1) infinite}
         @keyframes snSpin{to{transform:rotate(360deg)}} .sn-spin{animation:snSpin .8s linear infinite}
-        @keyframes snUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+        @keyframes snUp{from:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
         input,textarea,select{font-family:inherit}
+
+        /* ── MOBILE (default) ── */
+        .sn-desktop-layout {
+          display: flex;
+          min-height: 100vh;
+          max-width: 430px;
+          margin: 0 auto;
+          background: #F4F3EE;
+          position: relative;
+          box-shadow: 0 0 60px rgba(0,0,0,.12);
+        }
+        .sn-sidebar { display: none; }
+        .sn-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+        .sn-mobile-header { display: flex; }
+        .sn-fab { display: grid; }
+
+        /* ── DESKTOP (≥768px) ── */
+        @media (min-width: 768px) {
+          .sn-desktop-layout {
+            max-width: 1100px;
+            min-height: 100vh;
+            box-shadow: none;
+          }
+          .sn-sidebar {
+            display: flex;
+            flex-direction: column;
+            width: 260px;
+            flex-shrink: 0;
+            background: #F4F3EE;
+            border-left: 1px solid #E7E4DB;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+          }
+          .sn-main { max-width: 680px; flex: 1; }
+          .sn-mobile-header { display: none !important; }
+          .sn-fab { display: none !important; }
+          .sn-bottom-nav { display: none !important; }
+          nav button { transition: background .15s; }
+          nav button:hover { background: rgba(31,94,255,.08) !important; }
+        }
+
+        /* ── WIDE DESKTOP (≥1100px) ── */
+        @media (min-width: 1100px) {
+          .sn-sidebar { width: 280px; }
+        }
       `}</style>
-      <div style={{ position: "relative", width: "100%", maxWidth: 430, minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 0 60px rgba(0,0,0,.12)", color: T.ink }}>
-        {children}
-      </div>
+      {children}
     </div>
   );
 }

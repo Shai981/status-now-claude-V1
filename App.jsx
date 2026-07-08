@@ -16,17 +16,19 @@ import {
 
 /* ---------- Design tokens ---------- */
 const T = {
-  bg: "#F4F3EE",
+  bg: "#F0F2F5",
   surface: "#FFFFFF",
-  surfaceAlt: "#FAF9F5",
-  ink: "#14161C",
-  inkSoft: "#5B6270",
-  inkFaint: "#9AA0AB",
-  line: "#E7E4DB",
-  brand: "#1F5EFF",
-  brandInk: "#0B3AB8",
-  live: "#FF3B3B",
-  gold: "#E8A32B",
+  surfaceAlt: "#F7F8FA",
+  ink: "#050505",
+  inkSoft: "#65676B",
+  inkFaint: "#8A8D91",
+  line: "#E4E6EB",
+  brand: "#1877F2",
+  brandInk: "#0C5FD6",
+  live: "#E41E3F",
+  gold: "#F7B928",
+  navBg: "#FFFFFF",
+  sideHover: "#F2F2F2",
 };
 
 const CATEGORIES = {
@@ -428,58 +430,66 @@ function StatusCard({ s, users, me, dist, onLike, onOpen, onReport, onUser }) {
   const liked = s.likes.includes(me.id);
   const c = CATEGORIES[s.category];
   return (
-    <div style={{
-      background: T.surface, borderRadius: 18, border: `1px solid ${T.line}`,
-      padding: 15, marginBottom: 12, opacity: expired ? 0.62 : 1,
-      boxShadow: fr > 0.75 ? `0 0 0 1.5px ${c.color}22, 0 10px 26px rgba(20,22,28,.05)` : "0 4px 14px rgba(20,22,28,.04)",
-      transition: "opacity .3s", position: "relative", overflow: "hidden",
-    }}>
-      {/* freshness bar */}
-      <div style={{ position: "absolute", top: 0, insetInlineStart: 0, insetInlineEnd: 0, height: 3, background: T.line }}>
-        <div style={{ height: "100%", width: `${fr * 100}%`, background: c.color, transition: "width 1s linear" }} />
+    <div className="sn-card" style={{ opacity: expired ? 0.65 : 1, position: "relative" }}>
+      {/* freshness accent bar */}
+      <div style={{ height: 3, background: T.line, position: "absolute", top: 0, left: 0, right: 0 }}>
+        <div style={{ height: "100%", width: `${fr * 100}%`, background: c.color, transition: "width 1s linear", borderRadius: "3px 0 0 0" }} />
       </div>
 
-      <div style={{ display: "flex", gap: 11, marginTop: 4 }}>
-        <button onClick={() => onUser(author.id)} style={{ border: "none", background: "none", padding: 0, cursor: "pointer" }}><Avatar user={author} /></button>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-            <button onClick={() => onUser(author.id)} style={{ border: "none", background: "none", padding: 0, cursor: "pointer", fontWeight: 800, fontSize: 14.5, color: T.ink }}>{author.name}</button>
-            <CategoryChip cat={s.category} small />
+      <div style={{ padding: "14px 16px 0" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+          <button onClick={() => onUser(author.id)} style={{ border: "none", background: "none", padding: 0, cursor: "pointer", flexShrink: 0 }}><Avatar user={author} size={42} /></button>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+              <button onClick={() => onUser(author.id)} style={{ border: "none", background: "none", padding: 0, cursor: "pointer", fontWeight: 800, fontSize: 14.5, color: T.ink }}>{author.name}</button>
+              <CategoryChip cat={s.category} small />
+              {fr > 0.85 && !expired && <LivePulse size={7} color={c.color} />}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: T.inkSoft, marginTop: 2, flexWrap: "wrap" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}><Clock size={12} /> {expired ? "פג תוקף" : timeAgo(s.createdAt)}</span>
+              <span>·</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}><MapPin size={12} /> {s.locationName}</span>
+              {dist != null && <><span>·</span><span>{distanceLabel(dist)}</span></>}
+            </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: T.inkFaint, marginTop: 3, flexWrap: "wrap" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
-              {fr > 0.85 && <LivePulse size={7} color={c.color} />}
-              <Clock size={12} /> {expired ? "פג תוקף" : timeAgo(s.createdAt)}
-            </span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}><MapPin size={12} /> {s.locationName}</span>
-            {dist != null && <span>· {distanceLabel(dist)}</span>}
-          </div>
+          <button onClick={() => onReport(s.id, "status")} style={{ border: "none", background: "none", color: T.inkFaint, cursor: "pointer", padding: "4px", borderRadius: 6, flexShrink: 0 }}><Flag size={15} /></button>
         </div>
-      </div>
 
-      <div onClick={onOpen} style={{ fontSize: 15, lineHeight: 1.55, color: T.ink, margin: "11px 2px 0", cursor: "pointer" }}>{s.text}</div>
+        <div onClick={onOpen} style={{ fontSize: 15.5, lineHeight: 1.6, color: T.ink, margin: "10px 0 12px", cursor: "pointer" }}>{s.text}</div>
+      </div>
 
       {s.media && (
-        <div style={{ marginTop: 11, borderRadius: 13, overflow: "hidden", border: `1px solid ${T.line}`, position: "relative" }}>
+        <div style={{ position: "relative", background: "#000" }}>
           {s.media.type === "video"
-            ? <video src={s.media.src} controls playsInline preload="metadata" style={{ width: "100%", maxHeight: 300, display: "block", background: "#000" }} />
-            : <img src={s.media.src} alt="" style={{ width: "100%", maxHeight: 300, objectFit: "cover", display: "block" }} />}
+            ? <video src={s.media.src} controls playsInline preload="metadata" style={{ width: "100%", maxHeight: 400, display: "block" }} />
+            : <img src={s.media.src} alt="" style={{ width: "100%", maxHeight: 400, objectFit: "cover", display: "block" }} />}
           {s.media.type === "video" && (
-            <span style={{ position: "absolute", top: 8, insetInlineStart: 8, background: "rgba(0,0,0,.6)", color: "#fff", fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 999, display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <span style={{ position: "absolute", top: 8, insetInlineStart: 8, background: "rgba(0,0,0,.65)", color: "#fff", fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 999, display: "inline-flex", alignItems: "center", gap: 4 }}>
               <Video size={11} /> {s.media.duration ? `${s.media.duration}ש׳` : "וידאו"}
             </span>
           )}
         </div>
       )}
-      {!s.media && s.img && (
-        <div style={{ marginTop: 11, height: 120, borderRadius: 13, background: `linear-gradient(135deg, ${s.img.color}, ${s.img.color}AA)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 46 }}>{s.img.emoji}</div>
+
+      {/* counts row */}
+      {(s.likes.length > 0 || s.comments.length > 0) && (
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 16px", fontSize: 13.5, color: T.inkSoft }}>
+          {s.likes.length > 0 && <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 18, height: 18, borderRadius: 50, background: c.color, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><CheckCircle2 size={11} color="#fff" strokeWidth={2.5} /></span> {s.likes.length}</span>}
+          {s.comments.length > 0 && <span onClick={onOpen} style={{ cursor: "pointer" }}>{s.comments.length} תגובות</span>}
+        </div>
       )}
 
-      <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 12, paddingTop: 11, borderTop: `1px solid ${T.line}` }}>
-        <ActionBtn active={liked} activeColor={c.color} onClick={() => onLike(s.id)} icon={<CheckCircle2 size={17} />} label={`${s.likes.length} אימות`} />
-        <ActionBtn onClick={onOpen} icon={<MessageCircle size={17} />} label={`${s.comments.length} תגובות`} />
-        <div style={{ flex: 1 }} />
-        <ActionBtn onClick={() => onReport(s.id, "status")} icon={<Flag size={16} />} label="" muted />
+      {/* action buttons */}
+      <div style={{ display: "flex", borderTop: `1px solid ${T.line}`, margin: "0 16px", padding: "4px 0" }}>
+        <button className={`sn-react-btn${liked ? " active" : ""}`} onClick={() => onLike(s.id)}>
+          <CheckCircle2 size={18} strokeWidth={2.2} /> אימות
+        </button>
+        <button className="sn-react-btn" onClick={onOpen}>
+          <MessageCircle size={18} strokeWidth={2.2} /> תגובה
+        </button>
+        <button className="sn-react-btn" onClick={onOpen}>
+          <Send size={18} strokeWidth={2.2} /> שתף
+        </button>
       </div>
     </div>
   );
@@ -501,28 +511,36 @@ function RequestCard({ r, users, me, dist, onOpen, onReport, onUser }) {
   const statusMap = { open: { t: "פתוחה", color: T.brand }, answered: { t: "נענתה", color: "#12A594" }, expired: { t: "פג תוקף", color: T.inkFaint } };
   const st = statusMap[r.status];
   return (
-    <div style={{ background: T.surface, borderRadius: 18, border: `1px solid ${T.line}`, borderInlineStart: `4px solid ${c.color}`, padding: 15, marginBottom: 12, opacity: r.status === "expired" ? 0.65 : 1 }}>
-      <div style={{ display: "flex", gap: 11 }}>
-        <button onClick={() => onUser(author.id)} style={{ border: "none", background: "none", padding: 0, cursor: "pointer" }}><Avatar user={author} size={38} /></button>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-            <span style={{ fontWeight: 800, fontSize: 14 }}>{author.name}</span>
-            <span style={{ fontSize: 11, fontWeight: 800, color: st.color, background: st.color + "18", borderRadius: 999, padding: "2px 9px" }}>{st.t}</span>
+    <div className="sn-card" style={{ opacity: r.status === "expired" ? 0.65 : 1, borderInlineStart: `4px solid ${c.color}` }}>
+      <div style={{ padding: "14px 16px 0" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+          <button onClick={() => onUser(author.id)} style={{ border: "none", background: "none", padding: 0, cursor: "pointer", flexShrink: 0 }}><Avatar user={author} size={42} /></button>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+              <span style={{ fontWeight: 800, fontSize: 14.5, color: T.ink }}>{author.name}</span>
+              <span style={{ fontSize: 11.5, fontWeight: 800, color: st.color, background: st.color + "18", borderRadius: 999, padding: "2px 9px" }}>{st.t}</span>
+            </div>
+            <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 2, display: "flex", gap: 6, flexWrap: "wrap" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}><Clock size={12} /> {timeAgo(r.createdAt)}</span>
+              <span>·</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}><MapPin size={12} /> {r.locationName}</span>
+              {dist != null && <><span>·</span><span>{distanceLabel(dist)}</span></>}
+            </div>
           </div>
-          <div style={{ fontSize: 12, color: T.inkFaint, marginTop: 3, display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <span><Clock size={11} style={{ verticalAlign: -1 }} /> {timeAgo(r.createdAt)}</span>
-            <span><MapPin size={11} style={{ verticalAlign: -1 }} /> {r.locationName}</span>
-            {dist != null && <span>· {distanceLabel(dist)}</span>}
-          </div>
+          <button onClick={() => onReport(r.id, "request")} style={{ border: "none", background: "none", color: T.inkFaint, cursor: "pointer", padding: "4px", borderRadius: 6, flexShrink: 0 }}><Flag size={15} /></button>
+        </div>
+        <div onClick={onOpen} style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.6, color: T.ink, margin: "10px 0 12px", cursor: "pointer", display: "flex", alignItems: "flex-start", gap: 8 }}>
+          <HelpCircle size={18} color={c.color} style={{ flexShrink: 0, marginTop: 2 }} />
+          <span>{r.text}</span>
         </div>
       </div>
-      <div onClick={onOpen} style={{ fontSize: 15.5, fontWeight: 600, lineHeight: 1.5, color: T.ink, margin: "11px 2px 0", cursor: "pointer" }}>
-        <HelpCircle size={16} style={{ verticalAlign: -3, color: c.color, marginInlineEnd: 4 }} />{r.text}
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 12, paddingTop: 11, borderTop: `1px solid ${T.line}` }}>
-        <ActionBtn onClick={onOpen} active activeColor={c.color} icon={<Send size={15} />} label={r.answers.length ? `${r.answers.length} תשובות` : "ענה עכשיו"} />
-        <div style={{ flex: 1 }} />
-        <ActionBtn onClick={() => onReport(r.id, "request")} icon={<Flag size={16} />} label="" muted />
+      <div style={{ display: "flex", borderTop: `1px solid ${T.line}`, margin: "0 16px", padding: "4px 0" }}>
+        <button className="sn-react-btn active" style={{ color: c.color }} onClick={onOpen}>
+          <Send size={18} strokeWidth={2.2} /> {r.answers.length ? `${r.answers.length} תשובות` : "ענה עכשיו"}
+        </button>
+        <button className="sn-react-btn" onClick={onOpen}>
+          <MessageCircle size={18} strokeWidth={2.2} /> תגובה
+        </button>
       </div>
     </div>
   );
@@ -1134,7 +1152,7 @@ function BottomNav({ tab, setTab, onCreate }) {
     { k: "profile", label: "פרופיל", Icon: UserIcon },
   ];
   return (
-    <div className="sn-bottom-nav" style={{ position: "fixed", bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, background: "rgba(255,255,255,.92)", backdropFilter: "blur(10px)", borderTop: `1px solid ${T.line}`, display: "flex", padding: "8px 6px calc(8px + env(safe-area-inset-bottom))", zIndex: 20, maxWidth: 430, margin: "0 auto" }}>
+    <div className="sn-bottom-nav" style={{ position: "fixed", bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, background: "#FFFFFF", backdropFilter: "blur(10px)", borderTop: `1px solid ${T.line}`, display: "flex", padding: "8px 6px calc(8px + env(safe-area-inset-bottom))", zIndex: 20, maxWidth: 430, margin: "0 auto" }}>
       {items.map((it) => {
         const active = tab === it.k;
         return (
@@ -1234,61 +1252,126 @@ export default function App() {
 
   return (
     <Shell>
-      {/* desktop sidebar + mobile layout */}
-      <div className="sn-desktop-layout">
+      {/* ── FIXED TOP NAV BAR ── */}
+      <header className="sn-topbar">
+        {/* Logo */}
+        <div className="sn-topbar-logo">
+          <span style={{ display:"inline-flex", padding:7, borderRadius:12, background:T.brand, color:"#fff" }}><Radio size={18} strokeWidth={2.8}/></span>
+          <span dir="ltr" style={{ fontSize:20 }}>Status<span style={{ color:T.brand }}> Now</span></span>
+        </div>
+        {/* Center tabs — desktop */}
+        <div className="sn-topbar-tabs">
+          {[{k:"feed",Icon:Newspaper},{k:"map",Icon:MapIcon},{k:"requests",Icon:HelpCircle},{k:"groups",Icon:Users}].map(({k,Icon})=>(
+            <button key={k} className={`sn-topbar-tab${tab===k?" active":""}`} onClick={()=>goTab(k)}>
+              <Icon size={22} strokeWidth={tab===k?2.6:2}/>
+            </button>
+          ))}
+        </div>
+        {/* Right actions */}
+        <div className="sn-topbar-actions">
+          <button className="sn-topbar-btn" onClick={()=>setModal({type:"createMenu"})} title="פרסם עדכון" style={{background:T.brand,color:"#fff"}}><Plus size={20} strokeWidth={2.6}/></button>
+          <button className="sn-topbar-btn" onClick={()=>goTab("profile")} title="פרופיל"><Avatar user={me} size={36}/></button>
+        </div>
+      </header>
 
-        {/* ── SIDEBAR (desktop only) ── */}
+      {/* ── PAGE BODY (below topbar) ── */}
+      <div className="sn-page">
+
+        {/* LEFT SIDEBAR (desktop only) */}
         <aside className="sn-sidebar">
-          <div style={{ padding: "28px 20px 20px", borderBottom: `1px solid ${T.line}` }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 9, fontWeight: 900, fontSize: 22, color: T.ink }}>
-              <span style={{ display: "inline-flex", padding: 8, borderRadius: 12, background: T.brand, color: "#fff" }}><Radio size={20} strokeWidth={2.8} /></span>
-              <span dir="ltr">Status<span style={{ color: T.brand }}> Now</span></span>
+          {/* profile mini-card */}
+          <div style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 4px 12px", marginBottom:4 }}>
+            <button onClick={()=>goTab("profile")} style={{border:"none",background:"none",padding:0,cursor:"pointer"}}><Avatar user={me} size={44}/></button>
+            <div>
+              <div style={{fontWeight:800,fontSize:15,color:T.ink}}>{me.name}</div>
+              <div style={{fontSize:12.5,color:T.inkSoft,marginTop:1}}>{me.city}</div>
             </div>
           </div>
-          <nav style={{ padding: "14px 12px", flex: 1 }}>
+          <div style={{height:1,background:T.line,margin:"0 4px 8px"}}/>
+          <nav>
             {[
-              { k: "feed", label: "פיד", Icon: Newspaper },
-              { k: "map", label: "מפת אירועים", Icon: MapIcon },
-              { k: "requests", label: "בקשות מידע", Icon: HelpCircle },
-              { k: "groups", label: "קבוצות", Icon: Users },
-              { k: "profile", label: "הפרופיל שלי", Icon: UserIcon },
-            ].map(({ k, label, Icon }) => (
-              <button key={k} onClick={() => goTab(k)} style={{
-                width: "100%", display: "flex", alignItems: "center", gap: 12,
-                border: "none", background: tab === k ? `${T.brand}12` : "none",
-                color: tab === k ? T.brand : T.inkSoft, borderRadius: 13,
-                padding: "12px 14px", fontSize: 15, fontWeight: tab === k ? 800 : 600,
-                cursor: "pointer", fontFamily: "inherit", marginBottom: 4,
-              }}>
-                <Icon size={20} strokeWidth={tab === k ? 2.6 : 2} />
+              { k:"feed",    label:"פיד",           Icon:Newspaper  },
+              { k:"map",     label:"מפת אירועים",   Icon:MapIcon    },
+              { k:"requests",label:"בקשות מידע",    Icon:HelpCircle },
+              { k:"groups",  label:"קבוצות",        Icon:Users      },
+              { k:"profile", label:"הפרופיל שלי",   Icon:UserIcon   },
+            ].map(({k,label,Icon})=>(
+              <button key={k} className={`sn-nav-btn${tab===k?" active":""}`} onClick={()=>goTab(k)}>
+                <span className="sn-nav-icon"><Icon size={19} strokeWidth={tab===k?2.5:2}/></span>
                 {label}
               </button>
             ))}
           </nav>
-          <div style={{ padding: "14px 12px", borderTop: `1px solid ${T.line}` }}>
-            <button onClick={() => setModal({ type: "createMenu" })} style={{
-              width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 9,
-              border: "none", background: T.brand, color: "#fff", borderRadius: 14,
-              padding: "14px", fontSize: 15, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
-              boxShadow: `0 8px 20px ${T.brand}44`,
-            }}><Plus size={20} /> פרסם עדכון</button>
-            <button onClick={() => { setAuthed(false); setAuthScreen("login"); }} style={{ width: "100%", marginTop: 10, border: `1.5px solid ${T.line}`, background: "none", borderRadius: 12, padding: "10px", fontWeight: 700, fontSize: 13.5, cursor: "pointer", color: T.inkSoft, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: "inherit" }}><LogOut size={16} /> התנתקות</button>
-          </div>
+          <div style={{height:1,background:T.line,margin:"12px 4px"}}/>
+          <button className="sn-nav-btn" onClick={()=>{setAuthed(false);setAuthScreen("login");}}>
+            <span className="sn-nav-icon"><LogOut size={18}/></span>
+            התנתקות
+          </button>
         </aside>
 
-        {/* ── MAIN CONTENT ── */}
+        {/* ── MAIN FEED COLUMN ── */}
         <div className="sn-main">
-          {/* header — mobile only */}
-          <div className="sn-mobile-header" style={{ position: "sticky", top: 0, zIndex: 15, background: "rgba(244,243,238,.92)", backdropFilter: "blur(8px)", padding: "14px 18px 8px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${T.line}` }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 900, fontSize: 20, color: T.ink }}>
-              <span style={{ display: "inline-flex", padding: 6, borderRadius: 10, background: T.brand, color: "#fff" }}><Radio size={17} strokeWidth={2.8} /></span>
-              {titles[tab]}
+          {/* compose box — show on feed tab */}
+          {tab === "feed" && (
+            <div className="sn-compose" style={{marginTop:0}}>
+              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+                <Avatar user={me} size={40}/>
+                <button className="sn-compose-btn" onClick={()=>setModal({type:"createMenu"})}>
+                  מה קורה עכשיו לידך, {me.name.split(" ")[0]}?
+                </button>
+              </div>
+              <div style={{display:"flex",gap:4,paddingTop:8,borderTop:`1px solid ${T.line}`}}>
+                <button onClick={()=>{setPresetGroupForPost(null);setModal({type:"createStatus"});}} style={{flex:1,border:"none",background:"none",borderRadius:8,padding:"8px 4px",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontSize:13.5,fontWeight:700,color:T.inkSoft,cursor:"pointer",fontFamily:"inherit"}} onMouseEnter={e=>e.currentTarget.style.background="#F2F2F2"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                  <ImageIcon size={20} color="#45BD62"/> תמונה/וידאו
+                </button>
+                <button onClick={()=>setModal({type:"createRequest"})} style={{flex:1,border:"none",background:"none",borderRadius:8,padding:"8px 4px",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontSize:13.5,fontWeight:700,color:T.inkSoft,cursor:"pointer",fontFamily:"inherit"}} onMouseEnter={e=>e.currentTarget.style.background="#F2F2F2"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                  <HelpCircle size={20} color="#F7B928"/> בקשת מידע
+                </button>
+                <button onClick={()=>setModal({type:"createStatus"})} style={{flex:1,border:"none",background:"none",borderRadius:8,padding:"8px 4px",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontSize:13.5,fontWeight:700,color:T.inkSoft,cursor:"pointer",fontFamily:"inherit"}} onMouseEnter={e=>e.currentTarget.style.background="#F2F2F2"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                  <Radio size={20} color="#E41E3F"/> עדכון חי
+                </button>
+              </div>
             </div>
-            <button onClick={() => goTab("profile")} style={{ border: "none", background: "none", padding: 0, cursor: "pointer" }}><Avatar user={me} size={34} /></button>
-          </div>
+          )}
+          <div className="sn-feed-area">{screen}</div>
+        </div>
 
-          {/* scroll area */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 96px" }}>{screen}</div>
+        {/* ── RIGHT PANEL (desktop only) ── */}
+        <div className="sn-right-panel">
+          {/* trending / active categories */}
+          <div style={{background:"#fff",borderRadius:10,border:`1px solid ${T.line}`,padding:"14px 16px",marginBottom:12,boxShadow:"0 1px 2px rgba(0,0,0,.06)"}}>
+            <div style={{fontWeight:800,fontSize:16,marginBottom:12}}>קטגוריות פעילות</div>
+            {Object.entries(CATEGORIES).map(([k,c])=>{
+              const count = data.statuses.filter(s=>s.category===k&&freshness(s.createdAt,s.expiresAt)>0).length;
+              if(!count) return null;
+              return (
+                <div key={k} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${T.line}`,cursor:"pointer"}} onClick={()=>setCatFilter(catFilter===k?null:k)}>
+                  <span style={{width:36,height:36,borderRadius:10,background:c.color+"18",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {React.createElement(c.Icon,{size:18,color:c.color})}
+                  </span>
+                  <div style={{flex:1}}>
+                    <div style={{fontWeight:700,fontSize:13.5}}>{c.he}</div>
+                    <div style={{fontSize:12,color:T.inkSoft}}>{count} עדכון{count!==1?"ים":""} פעיל{count!==1?"ים":""}</div>
+                  </div>
+                  {catFilter===k && <Check size={16} color={T.brand}/>}
+                </div>
+              );
+            })}
+          </div>
+          {/* top reporters */}
+          <div style={{background:"#fff",borderRadius:10,border:`1px solid ${T.line}`,padding:"14px 16px",boxShadow:"0 1px 2px rgba(0,0,0,.06)"}}>
+            <div style={{fontWeight:800,fontSize:16,marginBottom:12}}>מדווחים מובילים</div>
+            {[...data.users].sort((a,b)=>b.reputation-a.reputation).slice(0,4).map(u=>(
+              <div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${T.line}`,cursor:"pointer"}} onClick={()=>{openUser(u.id);}}>
+                <Avatar user={u} size={38}/>
+                <div style={{flex:1}}>
+                  <div style={{fontWeight:700,fontSize:13.5}}>{u.name}</div>
+                  <div style={{fontSize:12,color:T.inkSoft}}>{u.city} · {u.reputation} נקודות</div>
+                </div>
+                <Award size={16} color={T.gold}/>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -1317,13 +1400,14 @@ export default function App() {
   );
 }
 
-/* app frame — responsive RTL */
+/* app frame — social-network layout, RTL */
 function Shell({ children }) {
   return (
-    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#E5E3DB", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
+    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#F0F2F5", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Rubik:wght@600;700;800&display=swap');
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+        *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #F0F2F5; }
         .sn-scroll-x::-webkit-scrollbar{display:none} .sn-scroll-x{scrollbar-width:none}
         ::-webkit-scrollbar{width:0}
         @keyframes snPing{75%,100%{transform:scale(2.2);opacity:0}}
@@ -1332,59 +1416,158 @@ function Shell({ children }) {
         @keyframes snUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
         input,textarea,select{font-family:inherit}
 
-        /* ── MOBILE (default) ── */
-        html, body { margin: 0; padding: 0; overflow-x: hidden; }
-        .sn-desktop-layout {
-          display: flex;
-          min-height: 100vh;
-          width: 100%;
-          background: #F4F3EE;
+        /* ═══ TOP NAV BAR (fixed, full-width) ═══ */
+        .sn-topbar {
+          position: fixed; top: 0; left: 0; right: 0; height: 56px;
+          background: #fff; border-bottom: 1px solid #E4E6EB;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 0 16px; z-index: 100;
+          box-shadow: 0 2px 4px rgba(0,0,0,.05);
+        }
+        .sn-topbar-logo {
+          display: flex; align-items: center; gap: 8px;
+          font-weight: 900; font-size: 22px; color: #1877F2; letter-spacing: -.5px;
+          text-decoration: none;
+        }
+        .sn-topbar-tabs {
+          display: none; align-items: center; gap: 2px;
+        }
+        .sn-topbar-tab {
+          border: none; background: none; cursor: pointer;
+          width: 112px; height: 48px; border-radius: 10px;
+          display: flex; align-items: center; justify-content: center;
+          color: #65676B; transition: background .15s;
           position: relative;
         }
+        .sn-topbar-tab:hover { background: #F2F2F2; }
+        .sn-topbar-tab.active { color: #1877F2; }
+        .sn-topbar-tab.active::after {
+          content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+          height: 3px; background: #1877F2; border-radius: 2px;
+        }
+        .sn-topbar-actions {
+          display: flex; align-items: center; gap: 8px;
+        }
+        .sn-topbar-btn {
+          width: 40px; height: 40px; border-radius: 50%; border: none;
+          background: #E4E6EB; color: #050505;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; flex-shrink: 0; transition: background .15s;
+        }
+        .sn-topbar-btn:hover { background: #D8DADF; }
+
+        /* ═══ PAGE LAYOUT BELOW TOPBAR ═══ */
+        .sn-page {
+          padding-top: 56px;
+          min-height: 100vh;
+          display: flex;
+          justify-content: center;
+        }
+
+        /* ═══ MOBILE ═══ */
         .sn-sidebar { display: none; }
         .sn-main {
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          min-height: 100vh;
-          min-width: 0;
-          width: 100%;
+          display: flex; flex-direction: column;
+          flex: 1; min-width: 0; width: 100%; max-width: 100%;
           overflow-x: hidden;
         }
-        .sn-mobile-header { display: flex; }
+        .sn-feed-area {
+          flex: 1; overflow-y: auto; padding: 12px 12px 96px;
+        }
+        .sn-mobile-header { display: none; }
         .sn-fab { display: grid; }
 
-        /* ── DESKTOP (≥768px) ── */
+        /* ═══ DESKTOP ≥768px ═══ */
         @media (min-width: 768px) {
-          .sn-desktop-layout {
-            max-width: 1100px;
-            min-height: 100vh;
-            box-shadow: none;
+          .sn-topbar-tabs { display: flex; }
+          .sn-page {
+            max-width: 1280px; margin: 0 auto; width: 100%;
+            align-items: flex-start; gap: 0;
           }
           .sn-sidebar {
-            display: flex;
-            flex-direction: column;
-            width: 260px;
-            flex-shrink: 0;
-            background: #F4F3EE;
-            border-left: 1px solid #E7E4DB;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
+            display: flex; flex-direction: column;
+            width: 280px; flex-shrink: 0;
+            position: sticky; top: 56px; height: calc(100vh - 56px);
+            overflow-y: auto; padding: 8px;
+            background: transparent;
           }
-          .sn-main { max-width: 680px; flex: 1; }
-          .sn-mobile-header { display: none !important; }
+          .sn-sidebar::-webkit-scrollbar { display: none; }
+          .sn-main {
+            max-width: 590px; flex: 1;
+            /* NOT position:relative — let the page flow normally */
+          }
+          .sn-feed-area {
+            padding: 16px 0 32px;
+            overflow-y: visible;
+          }
           .sn-fab { display: none !important; }
           .sn-bottom-nav { display: none !important; }
-          nav button { transition: background .15s; }
-          nav button:hover { background: rgba(31,94,255,.08) !important; }
+          .sn-right-panel {
+            width: 260px; flex-shrink: 0;
+            position: sticky; top: 56px; height: calc(100vh - 56px);
+            overflow-y: auto; padding: 16px 8px;
+          }
+          .sn-right-panel::-webkit-scrollbar { display: none; }
         }
 
-        /* ── WIDE DESKTOP (≥1100px) ── */
+        /* ═══ WIDE DESKTOP ≥1100px ═══ */
         @media (min-width: 1100px) {
-          .sn-sidebar { width: 280px; }
+          .sn-sidebar { width: 320px; }
+          .sn-right-panel { width: 320px; }
         }
+
+        /* ═══ SIDEBAR NAV BUTTONS ═══ */
+        .sn-nav-btn {
+          width: 100%; display: flex; align-items: center; gap: 12px;
+          border: none; background: none; border-radius: 10px;
+          padding: 10px 12px; cursor: pointer; font-family: inherit;
+          font-size: 15px; font-weight: 600; color: #050505;
+          transition: background .12s; margin-bottom: 2px; text-align: start;
+        }
+        .sn-nav-btn:hover { background: #F2F2F2; }
+        .sn-nav-btn.active { background: #E7F3FF; color: #1877F2; font-weight: 700; }
+        .sn-nav-icon {
+          width: 36px; height: 36px; border-radius: 50%;
+          background: #E4E6EB; display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; transition: background .12s;
+        }
+        .sn-nav-btn.active .sn-nav-icon { background: #CCE4FF; }
+
+        /* ═══ POST CARD (Facebook-style) ═══ */
+        .sn-card {
+          background: #fff; border-radius: 10px;
+          border: 1px solid #E4E6EB;
+          margin-bottom: 12px;
+          box-shadow: 0 1px 2px rgba(0,0,0,.06);
+          overflow: hidden;
+        }
+        .sn-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+
+        /* ═══ COMPOSE BOX ═══ */
+        .sn-compose {
+          background: #fff; border-radius: 10px;
+          border: 1px solid #E4E6EB;
+          padding: 12px 16px; margin-bottom: 12px;
+          box-shadow: 0 1px 2px rgba(0,0,0,.06);
+        }
+        .sn-compose-btn {
+          flex: 1; border: none; background: #F0F2F5;
+          border-radius: 20px; padding: 10px 16px;
+          text-align: start; color: #65676B; font-size: 15px;
+          cursor: pointer; font-family: inherit;
+        }
+        .sn-compose-btn:hover { background: #E4E6EB; }
+
+        /* ═══ REACTION BUTTONS ═══ */
+        .sn-react-btn {
+          flex: 1; border: none; background: none;
+          display: flex; align-items: center; justify-content: center; gap: 6px;
+          padding: 8px; border-radius: 8px; cursor: pointer;
+          font-size: 14px; font-weight: 600; color: #65676B;
+          font-family: inherit; transition: background .12s;
+        }
+        .sn-react-btn:hover { background: #F2F2F2; }
+        .sn-react-btn.active { color: #1877F2; }
       `}</style>
       {children}
     </div>
@@ -1394,7 +1577,7 @@ function Shell({ children }) {
 function ToastView({ toast }) {
   if (!toast) return null;
   return (
-    <div style={{ position: "absolute", bottom: 104, insetInlineStart: 0, insetInlineEnd: 0, display: "flex", justifyContent: "center", zIndex: 60, pointerEvents: "none" }}>
+    <div style={{ position: "fixed", bottom: 84, insetInlineStart: 0, insetInlineEnd: 0, display: "flex", justifyContent: "center", zIndex: 200, pointerEvents: "none" }}>
       <div style={{ background: T.ink, color: "#fff", borderRadius: 999, padding: "11px 20px", fontSize: 13.5, fontWeight: 700, boxShadow: "0 12px 30px rgba(0,0,0,.25)", animation: "snUp .25s ease", maxWidth: "88%", textAlign: "center" }}>{toast}</div>
     </div>
   );

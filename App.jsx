@@ -16,14 +16,14 @@ import {
 
 /* ---------- Design tokens ---------- */
 const T = {
-  bg: "#F0F2F5",
+  bg: "#F2F5FC",
   surface: "#FFFFFF",
   surfaceAlt: "#F7F8FA",
   ink: "#050505",
   inkSoft: "#65676B",
   inkFaint: "#8A8D91",
   line: "#E4E6EB",
-  brand: "#1877F2",
+  brand: "#4A7FE5",
   brandInk: "#0C5FD6",
   live: "#E41E3F",
   gold: "#F7B928",
@@ -1284,7 +1284,7 @@ export default function App() {
           <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 8px 14px", marginBottom:4 }}>
             <button onClick={()=>goTab("profile")} style={{border:"none",background:"none",padding:0,cursor:"pointer",position:"relative"}}>
               <Avatar user={me} size={46}/>
-              <span style={{position:"absolute",bottom:1,insetInlineEnd:1,width:13,height:13,borderRadius:999,background:"#2ECC71",border:"2px solid #0D1F6E"}}/>
+              <span style={{position:"absolute",bottom:1,insetInlineEnd:1,width:13,height:13,borderRadius:999,background:"#2ECC71",border:"2px solid #5B8DEF"}}/>
             </button>
             <div>
               <div style={{fontWeight:800,fontSize:15,color:"#fff"}}>{me.name}</div>
@@ -1423,11 +1423,11 @@ export default function App() {
 /* app frame — social-network layout, RTL */
 function Shell({ children }) {
   return (
-    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#E8EBF5", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
+    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#F2F5FC", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
         *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #E8EBF5; }
+        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #F2F5FC; }
         .sn-scroll-x::-webkit-scrollbar{display:none} .sn-scroll-x{scrollbar-width:none}
         ::-webkit-scrollbar{width:0}
         @keyframes snPing{75%,100%{transform:scale(2.2);opacity:0}}
@@ -1439,16 +1439,16 @@ function Shell({ children }) {
         /* ═══ TOP NAV BAR ═══ */
         .sn-topbar {
           position: fixed; top: 0; left: 0; right: 0; height: 60px;
-          background: linear-gradient(135deg, #0F2FBF 0%, #1877F2 45%, #6C3FC7 100%);
+          background: linear-gradient(135deg, #4169D4 0%, #5B8DEF 45%, #7B6CE6 100%);
           display: flex; align-items: center; justify-content: space-between;
           padding: 0 20px; z-index: 100;
-          box-shadow: 0 4px 20px rgba(15,47,191,.35);
+          box-shadow: 0 4px 20px rgba(65,105,212,.22);
         }
         /* subtle shimmer line at bottom */
         .sn-topbar::after {
           content: '';
           position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-          background: linear-gradient(90deg, #60A5FA, #A78BFA, #F472B6, #34D399, #FBBF24);
+          background: linear-gradient(90deg, #93C5FD, #C4B5FD, #F9A8D4, #6EE7B7, #FDE68A);
         }
         .sn-topbar-logo {
           display: flex; align-items: center; gap: 9px;
@@ -1510,7 +1510,7 @@ function Shell({ children }) {
         .sn-compose-wrap {
           flex-shrink: 0;
           padding: 10px 12px 0;
-          background: #F0F2F5;
+          background: #F2F5FC;
         }
         .sn-feed-area {
           flex: 1; padding: 10px 12px 96px;
@@ -1550,8 +1550,8 @@ function Shell({ children }) {
             width: 280px; flex-shrink: 0;
             height: 100%;
             overflow-y: auto; padding: 12px 10px;
-            background: linear-gradient(180deg, #0D1F6E 0%, #1034A6 55%, #1877F2 100%);
-            box-shadow: 4px 0 20px rgba(13,31,110,.25);
+            background: linear-gradient(180deg, #4A72D4 0%, #5B8DEF 55%, #7AAAF5 100%);
+            box-shadow: 4px 0 20px rgba(74,114,212,.15);
           }
           .sn-sidebar::-webkit-scrollbar { display: none; }
 
@@ -1567,7 +1567,7 @@ function Shell({ children }) {
           .sn-compose-wrap {
             flex-shrink: 0;
             padding: 12px 0 0;
-            background: #F0F2F5;
+            background: #F2F5FC;
           }
           .sn-feed-area {
             flex: 1;
@@ -1582,8 +1582,8 @@ function Shell({ children }) {
             width: 260px; flex-shrink: 0;
             height: 100%;
             overflow-y: auto; padding: 14px 10px;
-            background: linear-gradient(180deg, #2D1B69 0%, #4C1D95 55%, #6C3FC7 100%);
-            box-shadow: -4px 0 20px rgba(45,27,105,.25);
+            background: linear-gradient(180deg, #6272D4 0%, #7B82EF 55%, #9B8EF5 100%);
+            box-shadow: -4px 0 20px rgba(98,114,212,.15);
           }
           .sn-right-panel::-webkit-scrollbar { display: none; }
 
@@ -1659,7 +1659,7 @@ function Shell({ children }) {
           position: absolute;
           top: 0; left: 0; right: 0;
           height: 4px;
-          background: linear-gradient(90deg, #1877F2, #45BD62, #F7B928, #E41E3F, #A855F7);
+          background: linear-gradient(90deg, #4A7FE5, #45BD62, #F7B928, #E41E3F, #7B6CE6);
           border-radius: 16px 16px 0 0;
         }
         .sn-compose-btn {
@@ -1672,8 +1672,8 @@ function Shell({ children }) {
         }
         .sn-compose-btn:hover {
           background: #EEF2FF;
-          border-color: #1877F2;
-          color: #1877F2;
+          border-color: #4A7FE5;
+          color: #4A7FE5;
         }
         /* quick action buttons */
         .sn-quick-btn {
@@ -1721,7 +1721,7 @@ function Shell({ children }) {
           font-family: inherit; transition: background .12s;
         }
         .sn-react-btn:hover { background: #F2F2F2; }
-        .sn-react-btn.active { color: #1877F2; }
+        .sn-react-btn.active { color: #4A7FE5; }
       `}</style>
       {children}
     </div>

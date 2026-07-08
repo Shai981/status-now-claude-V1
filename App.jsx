@@ -1312,28 +1312,36 @@ export default function App() {
 
         {/* ── MAIN FEED COLUMN ── */}
         <div className="sn-main">
-          {/* compose box — show on feed tab */}
+          {/* ── FROZEN COMPOSE BAR ── */}
           {tab === "feed" && (
-            <div className="sn-compose" style={{marginTop:0}}>
-              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
-                <Avatar user={me} size={40}/>
-                <button className="sn-compose-btn" onClick={()=>setModal({type:"createMenu"})}>
-                  מה קורה עכשיו לידך, {me.name.split(" ")[0]}?
-                </button>
-              </div>
-              <div style={{display:"flex",gap:4,paddingTop:8,borderTop:`1px solid ${T.line}`}}>
-                <button onClick={()=>{setPresetGroupForPost(null);setModal({type:"createStatus"});}} style={{flex:1,border:"none",background:"none",borderRadius:8,padding:"8px 4px",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontSize:13.5,fontWeight:700,color:T.inkSoft,cursor:"pointer",fontFamily:"inherit"}} onMouseEnter={e=>e.currentTarget.style.background="#F2F2F2"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
-                  <ImageIcon size={20} color="#45BD62"/> תמונה/וידאו
-                </button>
-                <button onClick={()=>setModal({type:"createRequest"})} style={{flex:1,border:"none",background:"none",borderRadius:8,padding:"8px 4px",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontSize:13.5,fontWeight:700,color:T.inkSoft,cursor:"pointer",fontFamily:"inherit"}} onMouseEnter={e=>e.currentTarget.style.background="#F2F2F2"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
-                  <HelpCircle size={20} color="#F7B928"/> בקשת מידע
-                </button>
-                <button onClick={()=>setModal({type:"createStatus"})} style={{flex:1,border:"none",background:"none",borderRadius:8,padding:"8px 4px",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontSize:13.5,fontWeight:700,color:T.inkSoft,cursor:"pointer",fontFamily:"inherit"}} onMouseEnter={e=>e.currentTarget.style.background="#F2F2F2"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
-                  <Radio size={20} color="#E41E3F"/> עדכון חי
-                </button>
+            <div className="sn-compose-wrap">
+              <div className="sn-compose">
+                {/* top row: avatar + prompt */}
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+                  <Avatar user={me} size={42}/>
+                  <button className="sn-compose-btn" onClick={()=>setModal({type:"createMenu"})}>
+                    מה קורה עכשיו לידך, {me.name.split(" ")[0]}?
+                  </button>
+                </div>
+                {/* action buttons row */}
+                <div style={{display:"flex",gap:6,paddingTop:10,borderTop:`1px solid ${T.line}`}}>
+                  <button className="sn-quick-btn sn-quick-green"
+                    onClick={()=>{setPresetGroupForPost(null);setModal({type:"createStatus"});}}>
+                    <ImageIcon size={18}/> תמונה/וידאו
+                  </button>
+                  <button className="sn-quick-btn sn-quick-amber"
+                    onClick={()=>setModal({type:"createRequest"})}>
+                    <HelpCircle size={18}/> בקשת מידע
+                  </button>
+                  <button className="sn-quick-btn sn-quick-red"
+                    onClick={()=>setModal({type:"createStatus"})}>
+                    <Radio size={18}/> עדכון חי
+                  </button>
+                </div>
               </div>
             </div>
           )}
+          {/* ── SCROLLING FEED ── */}
           <div className="sn-feed-area">{screen}</div>
         </div>
 
@@ -1473,8 +1481,13 @@ function Shell({ children }) {
           flex: 1; min-width: 0; width: 100%; max-width: 100%;
           overflow-x: hidden;
         }
+        .sn-compose-wrap {
+          flex-shrink: 0;
+          padding: 10px 12px 0;
+          background: #F0F2F5;
+        }
         .sn-feed-area {
-          flex: 1; overflow-y: auto; padding: 12px 12px 96px;
+          flex: 1; padding: 10px 12px 96px;
         }
         .sn-mobile-header { display: none; }
         .sn-fab { display: grid; }
@@ -1515,20 +1528,27 @@ function Shell({ children }) {
           }
           .sn-sidebar::-webkit-scrollbar { display: none; }
 
-          /* center: fills remaining space, scrolls internally */
+          /* center: flex column — compose frozen top, feed scrolls below */
           .sn-main {
             flex: 1;
             max-width: 590px;
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          }
+          .sn-compose-wrap {
+            flex-shrink: 0;
+            padding: 12px 0 0;
+            background: #F0F2F5;
+          }
+          .sn-feed-area {
+            flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
+            padding: 12px 0 32px;
           }
-          .sn-main::-webkit-scrollbar { display: none; }
-
-          .sn-feed-area {
-            padding: 16px 0 32px;
-            overflow-y: visible;
-          }
+          .sn-feed-area::-webkit-scrollbar { display: none; }
 
           /* right panel: fixed height, scrolls internally if needed */
           .sn-right-panel {
@@ -1576,19 +1596,76 @@ function Shell({ children }) {
         .sn-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.1); }
 
         /* ═══ COMPOSE BOX ═══ */
+        .sn-compose-wrap {
+          padding: 12px 12px 0;
+        }
         .sn-compose {
-          background: #fff; border-radius: 10px;
-          border: 1px solid #E4E6EB;
-          padding: 12px 16px; margin-bottom: 12px;
-          box-shadow: 0 1px 2px rgba(0,0,0,.06);
+          background: #fff;
+          border-radius: 16px;
+          border: none;
+          padding: 14px 16px 12px;
+          margin-bottom: 0;
+          box-shadow: 0 2px 12px rgba(0,0,0,.10), 0 0 0 1.5px rgba(24,119,242,.12);
+          position: relative;
+          overflow: hidden;
+        }
+        .sn-compose::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 4px;
+          background: linear-gradient(90deg, #1877F2, #45BD62, #F7B928, #E41E3F, #A855F7);
+          border-radius: 16px 16px 0 0;
         }
         .sn-compose-btn {
-          flex: 1; border: none; background: #F0F2F5;
-          border-radius: 20px; padding: 10px 16px;
+          flex: 1; border: 1.5px solid #E4E6EB;
+          background: #F8F9FF;
+          border-radius: 24px; padding: 10px 18px;
           text-align: start; color: #65676B; font-size: 15px;
           cursor: pointer; font-family: inherit;
+          transition: all .15s;
         }
-        .sn-compose-btn:hover { background: #E4E6EB; }
+        .sn-compose-btn:hover {
+          background: #EEF2FF;
+          border-color: #1877F2;
+          color: #1877F2;
+        }
+        /* quick action buttons */
+        .sn-quick-btn {
+          flex: 1; border: none; border-radius: 12px;
+          padding: 9px 6px;
+          display: flex; align-items: center; justify-content: center; gap: 6px;
+          font-size: 13px; font-weight: 800;
+          cursor: pointer; font-family: inherit;
+          transition: all .15s; white-space: nowrap;
+        }
+        .sn-quick-green {
+          background: linear-gradient(135deg, #D4F7E4, #A8EFC9);
+          color: #1A7A45;
+        }
+        .sn-quick-green:hover {
+          background: linear-gradient(135deg, #45BD62, #22A94A);
+          color: #fff;
+          box-shadow: 0 4px 12px rgba(69,189,98,.4);
+        }
+        .sn-quick-amber {
+          background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+          color: #92400E;
+        }
+        .sn-quick-amber:hover {
+          background: linear-gradient(135deg, #F59E0B, #D97706);
+          color: #fff;
+          box-shadow: 0 4px 12px rgba(245,158,11,.4);
+        }
+        .sn-quick-red {
+          background: linear-gradient(135deg, #FEE2E2, #FECACA);
+          color: #991B1B;
+        }
+        .sn-quick-red:hover {
+          background: linear-gradient(135deg, #EF4444, #DC2626);
+          color: #fff;
+          box-shadow: 0 4px 12px rgba(239,68,68,.4);
+        }
 
         /* ═══ REACTION BUTTONS ═══ */
         .sn-react-btn {

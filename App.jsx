@@ -1276,6 +1276,7 @@ export default function App() {
 
       {/* ── PAGE BODY (below topbar) ── */}
       <div className="sn-page">
+        <div className="sn-page-inner">
 
         {/* LEFT SIDEBAR (desktop only) */}
         <aside className="sn-sidebar">
@@ -1373,7 +1374,8 @@ export default function App() {
             ))}
           </div>
         </div>
-      </div>
+        </div>{/* end sn-page-inner */}
+      </div>{/* end sn-page */}
 
       {/* ── FIXED FAB (mobile only) ── */}
       <button className="sn-fab" onClick={() => setModal({ type: "createMenu" })} style={{
@@ -1476,38 +1478,68 @@ function Shell({ children }) {
         }
         .sn-mobile-header { display: none; }
         .sn-fab { display: grid; }
+        .sn-page-inner { display: contents; }
 
         /* ═══ DESKTOP ≥768px ═══ */
         @media (min-width: 768px) {
           .sn-topbar-tabs { display: flex; }
+
+          /* page takes exactly the viewport below the topbar — no page scroll */
           .sn-page {
-            max-width: 1280px; margin: 0 auto; width: 100%;
-            align-items: flex-start; gap: 0;
+            position: fixed;
+            top: 56px; left: 0; right: 0; bottom: 0;
+            padding-top: 0;
+            max-width: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
           }
+
+          /* inner wrapper caps width and fills full height */
+          .sn-page-inner {
+            display: flex;
+            width: 100%;
+            max-width: 1280px;
+            height: 100%;
+            align-items: flex-start;
+          }
+
+          /* both sidebars: fill height, don't scroll */
           .sn-sidebar {
             display: flex; flex-direction: column;
             width: 280px; flex-shrink: 0;
-            position: sticky; top: 56px; height: calc(100vh - 56px);
+            height: 100%;
             overflow-y: auto; padding: 8px;
             background: transparent;
           }
           .sn-sidebar::-webkit-scrollbar { display: none; }
+
+          /* center: fills remaining space, scrolls internally */
           .sn-main {
-            max-width: 590px; flex: 1;
-            /* NOT position:relative — let the page flow normally */
+            flex: 1;
+            max-width: 590px;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
           }
+          .sn-main::-webkit-scrollbar { display: none; }
+
           .sn-feed-area {
             padding: 16px 0 32px;
             overflow-y: visible;
           }
-          .sn-fab { display: none !important; }
-          .sn-bottom-nav { display: none !important; }
+
+          /* right panel: fixed height, scrolls internally if needed */
           .sn-right-panel {
             width: 260px; flex-shrink: 0;
-            position: sticky; top: 56px; height: calc(100vh - 56px);
+            height: 100%;
             overflow-y: auto; padding: 16px 8px;
           }
           .sn-right-panel::-webkit-scrollbar { display: none; }
+
+          .sn-fab { display: none !important; }
+          .sn-bottom-nav { display: none !important; }
         }
 
         /* ═══ WIDE DESKTOP ≥1100px ═══ */

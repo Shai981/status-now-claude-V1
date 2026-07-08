@@ -1256,8 +1256,8 @@ export default function App() {
       <header className="sn-topbar">
         {/* Logo */}
         <div className="sn-topbar-logo">
-          <span style={{ display:"inline-flex", padding:7, borderRadius:12, background:T.brand, color:"#fff" }}><Radio size={18} strokeWidth={2.8}/></span>
-          <span dir="ltr" style={{ fontSize:20 }}>Status<span style={{ color:T.brand }}> Now</span></span>
+          <span style={{ display:"inline-flex", padding:7, borderRadius:12, background:"rgba(255,255,255,.2)", color:"#fff", boxShadow:"0 0 0 1.5px rgba(255,255,255,.35)" }}><Radio size={18} strokeWidth={2.8}/></span>
+          <span dir="ltr" style={{ fontSize:20, color:"#fff", fontWeight:900 }}>Status<span style={{ color:"#A5C8FF" }}> Now</span></span>
         </div>
         {/* Center tabs — desktop */}
         <div className="sn-topbar-tabs">
@@ -1269,7 +1269,7 @@ export default function App() {
         </div>
         {/* Right actions */}
         <div className="sn-topbar-actions">
-          <button className="sn-topbar-btn" onClick={()=>setModal({type:"createMenu"})} title="פרסם עדכון" style={{background:T.brand,color:"#fff"}}><Plus size={20} strokeWidth={2.6}/></button>
+          <button className="sn-topbar-btn" onClick={()=>setModal({type:"createMenu"})} title="פרסם עדכון" style={{background:"linear-gradient(135deg,#FBBF24,#F59E0B)",color:"#fff",boxShadow:"0 4px 14px rgba(251,191,36,.5)"}}><Plus size={20} strokeWidth={2.6}/></button>
           <button className="sn-topbar-btn" onClick={()=>goTab("profile")} title="פרופיל"><Avatar user={me} size={36}/></button>
         </div>
       </header>
@@ -1280,15 +1280,21 @@ export default function App() {
 
         {/* LEFT SIDEBAR (desktop only) */}
         <aside className="sn-sidebar">
-          {/* profile mini-card */}
-          <div style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 4px 12px", marginBottom:4 }}>
-            <button onClick={()=>goTab("profile")} style={{border:"none",background:"none",padding:0,cursor:"pointer"}}><Avatar user={me} size={44}/></button>
+          {/* profile mini-card on dark bg */}
+          <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 8px 14px", marginBottom:4 }}>
+            <button onClick={()=>goTab("profile")} style={{border:"none",background:"none",padding:0,cursor:"pointer",position:"relative"}}>
+              <Avatar user={me} size={46}/>
+              <span style={{position:"absolute",bottom:1,insetInlineEnd:1,width:13,height:13,borderRadius:999,background:"#2ECC71",border:"2px solid #0D1F6E"}}/>
+            </button>
             <div>
-              <div style={{fontWeight:800,fontSize:15,color:T.ink}}>{me.name}</div>
-              <div style={{fontSize:12.5,color:T.inkSoft,marginTop:1}}>{me.city}</div>
+              <div style={{fontWeight:800,fontSize:15,color:"#fff"}}>{me.name}</div>
+              <div style={{fontSize:12,color:"rgba(255,255,255,.6)",marginTop:1,display:"flex",alignItems:"center",gap:4}}>
+                <span style={{width:6,height:6,borderRadius:999,background:"#2ECC71",display:"inline-block"}}/>
+                פעיל עכשיו
+              </div>
             </div>
           </div>
-          <div style={{height:1,background:T.line,margin:"0 4px 8px"}}/>
+          <div className="sn-nav-divider"/>
           <nav>
             {[
               { k:"feed",    label:"פיד",           Icon:Newspaper  },
@@ -1298,14 +1304,14 @@ export default function App() {
               { k:"profile", label:"הפרופיל שלי",   Icon:UserIcon   },
             ].map(({k,label,Icon})=>(
               <button key={k} className={`sn-nav-btn${tab===k?" active":""}`} onClick={()=>goTab(k)}>
-                <span className="sn-nav-icon"><Icon size={19} strokeWidth={tab===k?2.5:2}/></span>
+                <span className="sn-nav-icon"><Icon size={18} strokeWidth={tab===k?2.5:2}/></span>
                 {label}
               </button>
             ))}
           </nav>
-          <div style={{height:1,background:T.line,margin:"12px 4px"}}/>
-          <button className="sn-nav-btn" onClick={()=>{setAuthed(false);setAuthScreen("login");}}>
-            <span className="sn-nav-icon"><LogOut size={18}/></span>
+          <div className="sn-nav-divider" style={{marginTop:"auto"}}/>
+          <button className="sn-nav-btn" style={{color:"rgba(255,180,180,.85)"}} onClick={()=>{setAuthed(false);setAuthScreen("login");}}>
+            <span className="sn-nav-icon" style={{background:"rgba(239,68,68,.25)"}}><LogOut size={18} color="#FCA5A5"/></span>
             התנתקות
           </button>
         </aside>
@@ -1347,37 +1353,41 @@ export default function App() {
 
         {/* ── RIGHT PANEL (desktop only) ── */}
         <div className="sn-right-panel">
-          {/* trending / active categories */}
-          <div style={{background:"#fff",borderRadius:10,border:`1px solid ${T.line}`,padding:"14px 16px",marginBottom:12,boxShadow:"0 1px 2px rgba(0,0,0,.06)"}}>
-            <div style={{fontWeight:800,fontSize:16,marginBottom:12}}>קטגוריות פעילות</div>
+          {/* categories card — glass on violet */}
+          <div style={{background:"rgba(255,255,255,.1)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(255,255,255,.2)",padding:"14px 16px",marginBottom:14,boxShadow:"0 8px 24px rgba(0,0,0,.2)"}}>
+            <div style={{fontWeight:800,fontSize:15,color:"#fff",marginBottom:12,display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:18}}>📊</span> קטגוריות פעילות
+            </div>
             {Object.entries(CATEGORIES).map(([k,c])=>{
               const count = data.statuses.filter(s=>s.category===k&&freshness(s.createdAt,s.expiresAt)>0).length;
               if(!count) return null;
               return (
-                <div key={k} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${T.line}`,cursor:"pointer"}} onClick={()=>setCatFilter(catFilter===k?null:k)}>
-                  <span style={{width:36,height:36,borderRadius:10,background:c.color+"18",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                    {React.createElement(c.Icon,{size:18,color:c.color})}
+                <div key={k} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.12)",cursor:"pointer"}} onClick={()=>setCatFilter(catFilter===k?null:k)}>
+                  <span style={{width:34,height:34,borderRadius:10,background:c.color,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:`0 4px 10px ${c.color}66`}}>
+                    {React.createElement(c.Icon,{size:16,color:"#fff"})}
                   </span>
                   <div style={{flex:1}}>
-                    <div style={{fontWeight:700,fontSize:13.5}}>{c.he}</div>
-                    <div style={{fontSize:12,color:T.inkSoft}}>{count} עדכון{count!==1?"ים":""} פעיל{count!==1?"ים":""}</div>
+                    <div style={{fontWeight:700,fontSize:13,color:"#fff"}}>{c.he}</div>
+                    <div style={{fontSize:11.5,color:"rgba(255,255,255,.6)"}}>{count} פעיל{count!==1?"ים":""}</div>
                   </div>
-                  {catFilter===k && <Check size={16} color={T.brand}/>}
+                  {catFilter===k && <Check size={15} color="#60A5FA"/>}
                 </div>
               );
             })}
           </div>
-          {/* top reporters */}
-          <div style={{background:"#fff",borderRadius:10,border:`1px solid ${T.line}`,padding:"14px 16px",boxShadow:"0 1px 2px rgba(0,0,0,.06)"}}>
-            <div style={{fontWeight:800,fontSize:16,marginBottom:12}}>מדווחים מובילים</div>
+          {/* top reporters — glass on violet */}
+          <div style={{background:"rgba(255,255,255,.1)",backdropFilter:"blur(8px)",borderRadius:16,border:"1px solid rgba(255,255,255,.2)",padding:"14px 16px",boxShadow:"0 8px 24px rgba(0,0,0,.2)"}}>
+            <div style={{fontWeight:800,fontSize:15,color:"#fff",marginBottom:12,display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:18}}>🏆</span> מדווחים מובילים
+            </div>
             {[...data.users].sort((a,b)=>b.reputation-a.reputation).slice(0,4).map(u=>(
-              <div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${T.line}`,cursor:"pointer"}} onClick={()=>{openUser(u.id);}}>
+              <div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.12)",cursor:"pointer"}} onClick={()=>{openUser(u.id);}}>
                 <Avatar user={u} size={38}/>
                 <div style={{flex:1}}>
-                  <div style={{fontWeight:700,fontSize:13.5}}>{u.name}</div>
-                  <div style={{fontSize:12,color:T.inkSoft}}>{u.city} · {u.reputation} נקודות</div>
+                  <div style={{fontWeight:700,fontSize:13,color:"#fff"}}>{u.name}</div>
+                  <div style={{fontSize:11.5,color:"rgba(255,255,255,.6)"}}>{u.city} · {u.reputation} נק׳</div>
                 </div>
-                <Award size={16} color={T.gold}/>
+                <Award size={15} color="#FBBF24"/>
               </div>
             ))}
           </div>
@@ -1413,11 +1423,11 @@ export default function App() {
 /* app frame — social-network layout, RTL */
 function Shell({ children }) {
   return (
-    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#F0F2F5", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
+    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#E8EBF5", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
         *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #F0F2F5; }
+        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #E8EBF5; }
         .sn-scroll-x::-webkit-scrollbar{display:none} .sn-scroll-x{scrollbar-width:none}
         ::-webkit-scrollbar{width:0}
         @keyframes snPing{75%,100%{transform:scale(2.2);opacity:0}}
@@ -1426,49 +1436,65 @@ function Shell({ children }) {
         @keyframes snUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
         input,textarea,select{font-family:inherit}
 
-        /* ═══ TOP NAV BAR (fixed, full-width) ═══ */
+        /* ═══ TOP NAV BAR ═══ */
         .sn-topbar {
-          position: fixed; top: 0; left: 0; right: 0; height: 56px;
-          background: #fff; border-bottom: 1px solid #E4E6EB;
+          position: fixed; top: 0; left: 0; right: 0; height: 60px;
+          background: linear-gradient(135deg, #0F2FBF 0%, #1877F2 45%, #6C3FC7 100%);
           display: flex; align-items: center; justify-content: space-between;
-          padding: 0 16px; z-index: 100;
-          box-shadow: 0 2px 4px rgba(0,0,0,.05);
+          padding: 0 20px; z-index: 100;
+          box-shadow: 0 4px 20px rgba(15,47,191,.35);
+        }
+        /* subtle shimmer line at bottom */
+        .sn-topbar::after {
+          content: '';
+          position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+          background: linear-gradient(90deg, #60A5FA, #A78BFA, #F472B6, #34D399, #FBBF24);
         }
         .sn-topbar-logo {
-          display: flex; align-items: center; gap: 8px;
-          font-weight: 900; font-size: 22px; color: #1877F2; letter-spacing: -.5px;
+          display: flex; align-items: center; gap: 9px;
+          font-weight: 900; font-size: 22px; color: #fff; letter-spacing: -.5px;
           text-decoration: none;
         }
+        .sn-topbar-logo span { text-shadow: 0 2px 8px rgba(0,0,0,.2); }
         .sn-topbar-tabs {
-          display: none; align-items: center; gap: 2px;
+          display: none; align-items: center; gap: 4px;
         }
         .sn-topbar-tab {
-          border: none; background: none; cursor: pointer;
-          width: 112px; height: 48px; border-radius: 10px;
+          border: none; background: rgba(255,255,255,.08); cursor: pointer;
+          width: 108px; height: 44px; border-radius: 12px;
           display: flex; align-items: center; justify-content: center;
-          color: #65676B; transition: background .15s;
+          color: rgba(255,255,255,.75); transition: all .15s;
           position: relative;
         }
-        .sn-topbar-tab:hover { background: #F2F2F2; }
-        .sn-topbar-tab.active { color: #1877F2; }
+        .sn-topbar-tab:hover {
+          background: rgba(255,255,255,.18);
+          color: #fff;
+        }
+        .sn-topbar-tab.active {
+          background: rgba(255,255,255,.22);
+          color: #fff;
+          box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.3);
+        }
         .sn-topbar-tab.active::after {
-          content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
-          height: 3px; background: #1877F2; border-radius: 2px;
+          content: ''; position: absolute; bottom: -6px; left: 20%; right: 20%;
+          height: 3px; background: #fff; border-radius: 2px;
         }
-        .sn-topbar-actions {
-          display: flex; align-items: center; gap: 8px;
-        }
+        .sn-topbar-actions { display: flex; align-items: center; gap: 8px; }
         .sn-topbar-btn {
           width: 40px; height: 40px; border-radius: 50%; border: none;
-          background: #E4E6EB; color: #050505;
+          background: rgba(255,255,255,.15); color: #fff;
           display: flex; align-items: center; justify-content: center;
-          cursor: pointer; flex-shrink: 0; transition: background .15s;
+          cursor: pointer; flex-shrink: 0; transition: all .15s;
+          backdrop-filter: blur(4px);
         }
-        .sn-topbar-btn:hover { background: #D8DADF; }
+        .sn-topbar-btn:hover {
+          background: rgba(255,255,255,.28);
+          box-shadow: 0 0 0 2px rgba(255,255,255,.3);
+        }
 
         /* ═══ PAGE LAYOUT BELOW TOPBAR ═══ */
         .sn-page {
-          padding-top: 56px;
+          padding-top: 60px;
           min-height: 100vh;
           display: flex;
           justify-content: center;
@@ -1500,7 +1526,7 @@ function Shell({ children }) {
           /* page takes exactly the viewport below the topbar — no page scroll */
           .sn-page {
             position: fixed;
-            top: 56px; left: 0; right: 0; bottom: 0;
+            top: 60px; left: 0; right: 0; bottom: 0;
             padding-top: 0;
             max-width: 100%;
             overflow: hidden;
@@ -1523,8 +1549,9 @@ function Shell({ children }) {
             display: flex; flex-direction: column;
             width: 280px; flex-shrink: 0;
             height: 100%;
-            overflow-y: auto; padding: 8px;
-            background: transparent;
+            overflow-y: auto; padding: 12px 10px;
+            background: linear-gradient(180deg, #0D1F6E 0%, #1034A6 55%, #1877F2 100%);
+            box-shadow: 4px 0 20px rgba(13,31,110,.25);
           }
           .sn-sidebar::-webkit-scrollbar { display: none; }
 
@@ -1554,7 +1581,9 @@ function Shell({ children }) {
           .sn-right-panel {
             width: 260px; flex-shrink: 0;
             height: 100%;
-            overflow-y: auto; padding: 16px 8px;
+            overflow-y: auto; padding: 14px 10px;
+            background: linear-gradient(180deg, #2D1B69 0%, #4C1D95 55%, #6C3FC7 100%);
+            box-shadow: -4px 0 20px rgba(45,27,105,.25);
           }
           .sn-right-panel::-webkit-scrollbar { display: none; }
 
@@ -1571,19 +1600,35 @@ function Shell({ children }) {
         /* ═══ SIDEBAR NAV BUTTONS ═══ */
         .sn-nav-btn {
           width: 100%; display: flex; align-items: center; gap: 12px;
-          border: none; background: none; border-radius: 10px;
+          border: none; background: rgba(255,255,255,.07); border-radius: 12px;
           padding: 10px 12px; cursor: pointer; font-family: inherit;
-          font-size: 15px; font-weight: 600; color: #050505;
-          transition: background .12s; margin-bottom: 2px; text-align: start;
+          font-size: 14.5px; font-weight: 600; color: rgba(255,255,255,.82);
+          transition: all .15s; margin-bottom: 3px; text-align: start;
         }
-        .sn-nav-btn:hover { background: #F2F2F2; }
-        .sn-nav-btn.active { background: #E7F3FF; color: #1877F2; font-weight: 700; }
+        .sn-nav-btn:hover {
+          background: rgba(255,255,255,.16);
+          color: #fff;
+          transform: translateX(-2px);
+        }
+        .sn-nav-btn.active {
+          background: rgba(255,255,255,.22);
+          color: #fff; font-weight: 800;
+          box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.25);
+        }
         .sn-nav-icon {
-          width: 36px; height: 36px; border-radius: 50%;
-          background: #E4E6EB; display: flex; align-items: center; justify-content: center;
-          flex-shrink: 0; transition: background .12s;
+          width: 36px; height: 36px; border-radius: 10px;
+          background: rgba(255,255,255,.15);
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; transition: background .15s;
         }
-        .sn-nav-btn.active .sn-nav-icon { background: #CCE4FF; }
+        .sn-nav-btn.active .sn-nav-icon {
+          background: rgba(255,255,255,.3);
+          box-shadow: 0 4px 10px rgba(0,0,0,.2);
+        }
+        .sn-nav-divider {
+          height: 1px; background: rgba(255,255,255,.15);
+          margin: 8px 4px;
+        }
 
         /* ═══ POST CARD (Facebook-style) ═══ */
         .sn-card {

@@ -16,14 +16,14 @@ import {
 
 /* ---------- Design tokens ---------- */
 const T = {
-  bg: "#F1F5F9",
+  bg: "#F0FDFA",
   surface: "#FFFFFF",
   surfaceAlt: "#F8FAFF",
   ink: "#0F172A",
   inkSoft: "#64748B",
   inkFaint: "#94A3B8",
-  line: "#E2E8F0",
-  brand: "#3B82F6",
+  line: "#CCFBF1",
+  brand: "#0D9488",
   brandInk: "#0C5FD6",
   live: "#EF4444",
   gold: "#F59E0B",
@@ -1256,8 +1256,8 @@ export default function App() {
       <header className="sn-topbar">
         {/* Logo */}
         <div className="sn-topbar-logo">
-          <span style={{ display:"inline-flex", padding:7, borderRadius:10, background:"#3B82F6", color:"#fff", boxShadow:"0 2px 8px rgba(59,130,246,.35)" }}><Radio size={18} strokeWidth={2.8}/></span>
-          <span dir="ltr" style={{ fontSize:19, color:"#0F172A", fontWeight:900, letterSpacing:"-.3px" }}>Status<span style={{ color:"#3B82F6" }}> Now</span></span>
+          <span style={{ display:"inline-flex", padding:7, borderRadius:10, background:"rgba(255,255,255,.22)", color:"#fff", boxShadow:"0 2px 8px rgba(0,0,0,.12)" }}><Radio size={18} strokeWidth={2.8}/></span>
+          <span dir="ltr" style={{ fontSize:19, color:"#ffffff", fontWeight:900, letterSpacing:"-.3px" }}>Status<span style={{ color:"#CCFBF1" }}> Now</span></span>
         </div>
         {/* Center tabs — desktop */}
         <div className="sn-topbar-tabs">
@@ -1269,7 +1269,7 @@ export default function App() {
         </div>
         {/* Right actions */}
         <div className="sn-topbar-actions">
-          <button onClick={()=>setModal({type:"createMenu"})} title="פרסם עדכון" style={{display:"flex",alignItems:"center",gap:7,border:"none",background:"#3B82F6",color:"#fff",borderRadius:10,padding:"8px 16px",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 2px 8px rgba(59,130,246,.3)",transition:"all .12s"}}><Plus size={17} strokeWidth={2.6}/>פרסם</button>
+          <button onClick={()=>setModal({type:"createMenu"})} title="פרסם עדכון" style={{display:"flex",alignItems:"center",gap:7,border:"none",background:"rgba(255,255,255,.18)",color:"#fff",borderRadius:10,padding:"8px 16px",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit",border:"1.5px solid rgba(255,255,255,.4)",transition:"all .12s"}}><Plus size={17} strokeWidth={2.6}/>פרסם</button>
           <button className="sn-topbar-btn" onClick={()=>goTab("profile")} title="פרופיל"><Avatar user={me} size={36}/></button>
         </div>
       </header>
@@ -1284,7 +1284,7 @@ export default function App() {
           <div style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 6px 14px", marginBottom:2 }}>
             <button onClick={()=>goTab("profile")} style={{border:"none",background:"none",padding:0,cursor:"pointer",position:"relative"}}>
               <Avatar user={me} size={44}/>
-              <span style={{position:"absolute",bottom:1,insetInlineEnd:1,width:11,height:11,borderRadius:999,background:"#22C55E",border:"2px solid #fff"}}/>
+              <span style={{position:"absolute",bottom:1,insetInlineEnd:1,width:11,height:11,borderRadius:999,background:"#22C55E",border:"2px solid #A7F3D0"}}/>
             </button>
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontWeight:700,fontSize:14.5,color:"#0F172A",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{me.name}</div>
@@ -1351,7 +1351,7 @@ export default function App() {
         {/* ── RIGHT PANEL (desktop only) ── */}
         <div className="sn-right-panel">
           {/* categories card — glass on violet */}
-          <div style={{background:"#fff",borderRadius:12,border:"1px solid #E2E8F0",padding:"14px 14px",marginBottom:12,boxShadow:"0 1px 4px rgba(15,23,42,.05)"}}>
+          <div style={{background:"#F0FDFA",borderRadius:12,border:"1px solid #99F6E4",padding:"14px 14px",marginBottom:12,boxShadow:"0 1px 4px rgba(13,148,136,.07)"}}>
             <div style={{fontWeight:700,fontSize:13,color:"#94A3B8",letterSpacing:".5px",textTransform:"uppercase",marginBottom:10}}>
               קטגוריות פעילות
             </div>
@@ -1359,7 +1359,7 @@ export default function App() {
               const count = data.statuses.filter(s=>s.category===k&&freshness(s.createdAt,s.expiresAt)>0).length;
               if(!count) return null;
               return (
-                <div key={k} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 0",borderBottom:"1px solid #F1F5F9",cursor:"pointer"}} onClick={()=>setCatFilter(catFilter===k?null:k)}>
+                <div key={k} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 0",borderBottom:"1px solid #CCFBF1",cursor:"pointer"}} onClick={()=>setCatFilter(catFilter===k?null:k)}>
                   <span style={{width:32,height:32,borderRadius:8,background:c.color+"15",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                     {React.createElement(c.Icon,{size:15,color:c.color})}
                   </span>
@@ -1367,18 +1367,18 @@ export default function App() {
                     <div style={{fontWeight:600,fontSize:13,color:"#0F172A"}}>{c.he}</div>
                     <div style={{fontSize:11,color:"#94A3B8"}}>{count} פעיל{count!==1?"ים":""}</div>
                   </div>
-                  {catFilter===k && <Check size={14} color="#3B82F6"/>}
+                  {catFilter===k && <Check size={14} color="#0D9488"/>}
                 </div>
               );
             })}
           </div>
           {/* top reporters — glass on violet */}
-          <div style={{background:"#fff",borderRadius:12,border:"1px solid #E2E8F0",padding:"14px 14px",boxShadow:"0 1px 4px rgba(15,23,42,.05)"}}>
+          <div style={{background:"#F0FDFA",borderRadius:12,border:"1px solid #99F6E4",padding:"14px 14px",boxShadow:"0 1px 4px rgba(13,148,136,.07)"}}>
             <div style={{fontWeight:700,fontSize:13,color:"#94A3B8",letterSpacing:".5px",textTransform:"uppercase",marginBottom:10}}>
               מדווחים מובילים
             </div>
             {[...data.users].sort((a,b)=>b.reputation-a.reputation).slice(0,4).map(u=>(
-              <div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 0",borderBottom:"1px solid #F1F5F9",cursor:"pointer"}} onClick={()=>{openUser(u.id);}}>
+              <div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 0",borderBottom:"1px solid #CCFBF1",cursor:"pointer"}} onClick={()=>{openUser(u.id);}}>
                 <Avatar user={u} size={34}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontWeight:600,fontSize:13,color:"#0F172A",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{u.name}</div>
@@ -1395,8 +1395,8 @@ export default function App() {
       {/* ── FIXED FAB (mobile only) ── */}
       <button className="sn-fab" onClick={() => setModal({ type: "createMenu" })} style={{
         position: "fixed", bottom: "calc(72px + env(safe-area-inset-bottom))", insetInlineEnd: 20,
-        width: 58, height: 58, borderRadius: 999, background: T.brand, color: "#fff",
-        border: "none", boxShadow: `0 10px 28px ${T.brand}66`,
+        width: 58, height: 58, borderRadius: 999, background: "#0D9488", color: "#fff",
+        border: "none", boxShadow: "0 10px 28px rgba(13,148,136,.45)",
         cursor: "pointer", display: "grid", placeItems: "center", zIndex: 30,
       }}><Plus size={28} strokeWidth={2.6} /></button>
 
@@ -1420,11 +1420,11 @@ export default function App() {
 /* app frame — social-network layout, RTL */
 function Shell({ children }) {
   return (
-    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#F1F5F9", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
+    <div dir="rtl" lang="he" style={{ minHeight: "100vh", background: "#F0FDFA", fontFamily: "'Heebo','Assistant','Rubik',system-ui,'Arial Hebrew',sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
         *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #F1F5F9; }
+        html, body { margin: 0; padding: 0; overflow-x: hidden; background: #F0FDFA; }
         .sn-scroll-x::-webkit-scrollbar{display:none} .sn-scroll-x{scrollbar-width:none}
         ::-webkit-scrollbar{width:0}
         @keyframes snPing{75%,100%{transform:scale(2.2);opacity:0}}
@@ -1436,15 +1436,15 @@ function Shell({ children }) {
         /* ═══ TOP NAV BAR — clean white ═══ */
         .sn-topbar {
           position: fixed; top: 0; left: 0; right: 0; height: 58px;
-          background: #ffffff;
-          border-bottom: 1px solid #E2E8F0;
+          background: linear-gradient(135deg, #0F766E 0%, #0D9488 60%, #14B8A6 100%);
+          border-bottom: none;
           display: flex; align-items: center; justify-content: space-between;
           padding: 0 24px; z-index: 100;
-          box-shadow: 0 1px 3px rgba(0,0,0,.06);
+          box-shadow: 0 2px 12px rgba(13,148,136,.25);
         }
         .sn-topbar-logo {
           display: flex; align-items: center; gap: 10px;
-          font-weight: 900; font-size: 20px; color: #0F172A; letter-spacing: -.5px;
+          font-weight: 900; font-size: 20px; color: #ffffff; letter-spacing: -.5px;
           text-decoration: none; flex-shrink: 0;
         }
         .sn-topbar-tabs {
@@ -1458,20 +1458,20 @@ function Shell({ children }) {
           font-family: inherit; transition: color .12s;
           position: relative; white-space: nowrap;
         }
-        .sn-topbar-tab:hover { color: #3B82F6; }
-        .sn-topbar-tab.active { color: #3B82F6; font-weight: 700; }
+        .sn-topbar-tab:hover { color: #fff; background: rgba(255,255,255,.12); border-radius: 8px; }
+        .sn-topbar-tab.active { color: #fff; font-weight: 700; }
         .sn-topbar-tab.active::after {
           content: ''; position: absolute; bottom: 0; left: 12px; right: 12px;
-          height: 2px; background: #3B82F6; border-radius: 2px 2px 0 0;
+          height: 2px; background: rgba(255,255,255,.9); border-radius: 2px 2px 0 0;
         }
         .sn-topbar-actions { display: flex; align-items: center; gap: 8px; }
         .sn-topbar-btn {
           width: 38px; height: 38px; border-radius: 10px; border: none;
-          background: #F1F5F9; color: #475569;
+          background: rgba(255,255,255,.18); color: #fff;
           display: flex; align-items: center; justify-content: center;
           cursor: pointer; flex-shrink: 0; transition: all .12s;
         }
-        .sn-topbar-btn:hover { background: #E2E8F0; color: #0F172A; }
+        .sn-topbar-btn:hover { background: rgba(255,255,255,.3); color: #fff; }
 
         /* ═══ PAGE LAYOUT BELOW TOPBAR ═══ */
         .sn-page {
@@ -1491,7 +1491,7 @@ function Shell({ children }) {
         .sn-compose-wrap {
           flex-shrink: 0;
           padding: 10px 12px 0;
-          background: #F1F5F9;
+          background: #F0FDFA;
         }
         .sn-feed-area {
           flex: 1; padding: 10px 12px 96px;
@@ -1531,8 +1531,8 @@ function Shell({ children }) {
             width: 240px; flex-shrink: 0;
             height: 100%;
             overflow-y: auto; padding: 16px 10px;
-            background: #ffffff;
-            border-left: 1px solid #E2E8F0;
+            background: #CCFBF1;
+            border-left: 1px solid #99F6E4;
           }
           .sn-sidebar::-webkit-scrollbar { display: none; }
 
@@ -1548,7 +1548,7 @@ function Shell({ children }) {
           .sn-compose-wrap {
             flex-shrink: 0;
             padding: 12px 0 0;
-            background: #F1F5F9;
+            background: #F0FDFA;
           }
           .sn-feed-area {
             flex: 1;
@@ -1563,8 +1563,8 @@ function Shell({ children }) {
             width: 220px; flex-shrink: 0;
             height: 100%;
             overflow-y: auto; padding: 16px 10px;
-            background: #ffffff;
-            border-right: 1px solid #E2E8F0;
+            background: #F0FDFA;
+            border-right: 1px solid #99F6E4;
           }
           .sn-right-panel::-webkit-scrollbar { display: none; }
 
@@ -1583,42 +1583,42 @@ function Shell({ children }) {
           width: 100%; display: flex; align-items: center; gap: 10px;
           border: none; background: none; border-radius: 10px;
           padding: 9px 10px; cursor: pointer; font-family: inherit;
-          font-size: 14px; font-weight: 500; color: #475569;
+          font-size: 14px; font-weight: 500; color: #134E4A;
           transition: all .12s; margin-bottom: 2px; text-align: start;
         }
         .sn-nav-btn:hover {
-          background: #F1F5F9;
+          background: #F0FDFA;
           color: #0F172A;
         }
         .sn-nav-btn.active {
           background: #EFF6FF;
-          color: #3B82F6; font-weight: 700;
+          color: #0F4B46; font-weight: 700;
         }
         .sn-nav-icon {
           width: 34px; height: 34px; border-radius: 9px;
-          background: #F1F5F9;
+          background: #F0FDFA;
           display: flex; align-items: center; justify-content: center;
           flex-shrink: 0; transition: background .12s; color: #64748B;
         }
         .sn-nav-btn.active .sn-nav-icon {
-          background: #DBEAFE; color: #3B82F6;
+          background: #5EEAD4; color: #0F766E;
         }
         .sn-nav-divider {
-          height: 1px; background: #E2E8F0;
+          height: 1px; background: #99F6E4;
           margin: 10px 4px;
         }
 
         /* ═══ POST CARD ═══ */
         .sn-card {
           background: #fff; border-radius: 14px;
-          border: 1px solid #E2E8F0;
+          border: 1px solid #CCFBF1;
           margin-bottom: 14px;
-          box-shadow: 0 1px 4px rgba(15,23,42,.05);
+          box-shadow: 0 1px 4px rgba(13,148,136,.07);
           overflow: hidden;
           transition: box-shadow .15s, transform .12s;
         }
         .sn-card:hover {
-          box-shadow: 0 4px 16px rgba(15,23,42,.09);
+          box-shadow: 0 4px 16px rgba(13,148,136,.12);
           transform: translateY(-1px);
         }
 
@@ -1629,7 +1629,7 @@ function Shell({ children }) {
         .sn-compose {
           background: #fff;
           border-radius: 14px;
-          border: 1px solid #E2E8F0;
+          border: 1px solid #CCFBF1;
           padding: 14px 16px 12px;
           box-shadow: 0 1px 4px rgba(15,23,42,.05);
           position: relative; overflow: hidden;
@@ -1638,29 +1638,29 @@ function Shell({ children }) {
         .sn-compose::before {
           content: '';
           position: absolute; top: 0; left: 0; right: 0; height: 3px;
-          background: linear-gradient(90deg, #3B82F6, #06B6D4, #10B981, #F59E0B, #EF4444, #8B5CF6);
+          background: linear-gradient(90deg, #0D9488, #06B6D4, #10B981, #34D399, #14B8A6);
           border-radius: 14px 14px 0 0;
         }
         .sn-compose-btn {
-          flex: 1; border: 1px solid #E2E8F0;
-          background: #F8FAFC;
+          flex: 1; border: 1px solid #99F6E4;
+          background: #F0FDFA;
           border-radius: 999px; padding: 9px 18px;
           text-align: start; color: #94A3B8; font-size: 14.5px;
           cursor: pointer; font-family: inherit; transition: all .12s;
         }
         .sn-compose-btn:hover {
-          background: #EFF6FF; border-color: #BFDBFE; color: #3B82F6;
+          background: #CCFBF1; border-color: #5EEAD4; color: #0D9488;
         }
         /* quick action buttons */
         .sn-quick-btn {
-          flex: 1; border: 1px solid #E2E8F0; border-radius: 10px;
+          flex: 1; border: 1px solid #99F6E4; border-radius: 10px;
           padding: 8px 6px;
           display: flex; align-items: center; justify-content: center; gap: 6px;
           font-size: 13px; font-weight: 600; background: #fff;
           cursor: pointer; font-family: inherit;
-          transition: all .12s; white-space: nowrap; color: #64748B;
+          transition: all .12s; white-space: nowrap; color: #0F766E;
         }
-        .sn-quick-btn:hover { background: #F8FAFC; border-color: #CBD5E1; color: #0F172A; }
+        .sn-quick-btn:hover { background: #CCFBF1; border-color: #5EEAD4; color: #0F4B46; }
         .sn-quick-green  { color: #16A34A; }
         .sn-quick-green:hover  { background: #F0FDF4; border-color: #BBF7D0; color: #15803D; }
         .sn-quick-amber  { color: #D97706; }
@@ -1676,8 +1676,8 @@ function Shell({ children }) {
           font-size: 13.5px; font-weight: 600; color: #64748B;
           font-family: inherit; transition: all .12s;
         }
-        .sn-react-btn:hover { background: #F8FAFC; color: #0F172A; }
-        .sn-react-btn.active { color: #3B82F6; background: #EFF6FF; }
+        .sn-react-btn:hover { background: #F0FDFA; color: #0F172A; }
+        .sn-react-btn.active { color: #0D9488; background: #CCFBF1; }
       `}</style>
       {children}
     </div>

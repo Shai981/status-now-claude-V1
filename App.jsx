@@ -130,11 +130,11 @@ const PHOTOS = {
    ============================================================ */
 function seedData() {
   const users = [
-    { id: "u_me",  name: "נועה לוי",    color: AVCOLORS[0], bio: "אוהבת עיר, קפה ומידע בזמן אמת ☕", city: "תל אביב",  ...CITIES[0], reputation: 128 },
-    { id: "u_dan", name: "דן כהן",      color: AVCOLORS[1], bio: "נהג משאית, מדווח מהכבישים", city: "ראשון לציון", ...CITIES[4], reputation: 214 },
-    { id: "u_maya",name: "מאיה בר",     color: AVCOLORS[2], bio: "סטודנטית בירושלים", city: "ירושלים", ...CITIES[1], reputation: 63 },
-    { id: "u_avi", name: "אבי פרץ",     color: AVCOLORS[3], bio: "תושב חיפה", city: "חיפה", ...CITIES[2], reputation: 91 },
-    { id: "u_tal", name: "טל שגב",      color: AVCOLORS[4], bio: "רץ בפארק כל בוקר", city: "הרצליה", ...CITIES[7], reputation: 45 },
+    { id: "u_me",  name: "נועה לוי",    color: AVCOLORS[0], bio: "אוהבת עיר, קפה ומידע בזמן אמת ☕", city: "תל אביב",  lat: CITIES[0].lat, lng: CITIES[0].lng, reputation: 128 },
+    { id: "u_dan", name: "דן כהן",      color: AVCOLORS[1], bio: "נהג משאית, מדווח מהכבישים", city: "ראשון לציון", lat: CITIES[4].lat, lng: CITIES[4].lng, reputation: 214 },
+    { id: "u_maya",name: "מאיה בר",     color: AVCOLORS[2], bio: "סטודנטית בירושלים", city: "ירושלים", lat: CITIES[1].lat, lng: CITIES[1].lng, reputation: 63 },
+    { id: "u_avi", name: "אבי פרץ",     color: AVCOLORS[3], bio: "תושב חיפה", city: "חיפה", lat: CITIES[2].lat, lng: CITIES[2].lng, reputation: 91 },
+    { id: "u_tal", name: "טל שגב",      color: AVCOLORS[4], bio: "רץ בפארק כל בוקר", city: "הרצליה", lat: CITIES[7].lat, lng: CITIES[7].lng, reputation: 45 },
   ];
 
   const t = now();

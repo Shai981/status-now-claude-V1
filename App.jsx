@@ -1152,7 +1152,7 @@ function BottomNav({ tab, setTab, onCreate }) {
     { k: "profile", label: "פרופיל", Icon: UserIcon },
   ];
   return (
-    <div className="sn-bottom-nav" style={{ position: "fixed", bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, background: "#FFFFFF", backdropFilter: "blur(10px)", borderTop: `1px solid ${T.line}`, display: "flex", padding: "8px 6px calc(8px + env(safe-area-inset-bottom))", zIndex: 20, maxWidth: 430, margin: "0 auto" }}>
+    <div className="sn-bottom-nav">
       {items.map((it) => {
         const active = tab === it.k;
         return (
@@ -1395,8 +1395,8 @@ export default function App() {
       {/* ── FIXED FAB (mobile only) ── */}
       <button className="sn-fab" onClick={() => setModal({ type: "createMenu" })} style={{
         position: "fixed", bottom: "calc(72px + env(safe-area-inset-bottom))", insetInlineEnd: 20,
-        width: 58, height: 58, borderRadius: 999, background: "#1D4ED8", color: "#fff",
-        border: "none", boxShadow: "0 10px 28px rgba(29,78,216,.4)",
+        width: 58, height: 58, borderRadius: 999, background: "#0D9488", color: "#fff",
+        border: "none", boxShadow: "0 10px 28px rgba(13,148,136,.4)",
         cursor: "pointer", display: "grid", placeItems: "center", zIndex: 30,
       }}><Plus size={28} strokeWidth={2.6} /></button>
 
@@ -1474,59 +1474,78 @@ function Shell({ children }) {
         }
         .sn-topbar-btn:hover { background: #fff; color: #0D9488; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
 
-        /* ═══ PAGE LAYOUT BELOW TOPBAR ═══ */
+        /* ═══ MOBILE-FIRST LAYOUT ═══ */
+
+        /* Page sits below the fixed topbar */
         .sn-page {
           padding-top: 58px;
           min-height: 100vh;
-          display: flex;
-          justify-content: center;
+          width: 100%;
         }
+        .sn-page-inner { width: 100%; }
 
-        /* ═══ MOBILE ═══ */
+        /* Sidebars hidden on mobile */
         .sn-sidebar { display: none; }
+        .sn-right-panel { display: none; }
+
+        /* Main column fills full width on mobile */
         .sn-main {
           display: flex; flex-direction: column;
-          flex: 1; min-width: 0; width: 100%; max-width: 100%;
-          overflow-x: hidden;
+          width: 100%; min-width: 0;
         }
+
+        /* Compose wrapper — sticky at top of main */
         .sn-compose-wrap {
-          flex-shrink: 0;
-          padding: 10px 12px 0;
+          position: sticky;
+          top: 58px;
+          z-index: 10;
+          padding: 10px 12px 6px;
           background: #EFF6FF;
         }
+
+        /* Feed scrolls naturally in page flow on mobile */
         .sn-feed-area {
-          flex: 1; padding: 10px 12px 96px;
+          padding: 8px 12px calc(80px + env(safe-area-inset-bottom)) 12px;
+          min-height: 0;
         }
+
         .sn-mobile-header { display: none; }
         .sn-fab { display: grid; }
-        .sn-page-inner { display: contents; }
+
+        /* Bottom nav — full width on mobile */
+        .sn-bottom-nav {
+          position: fixed;
+          bottom: 0; left: 0; right: 0;
+          background: #fff;
+          border-top: 1px solid #BFDBFE;
+          display: flex;
+          padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+          z-index: 50;
+        }
 
         /* ═══ DESKTOP ≥768px ═══ */
         @media (min-width: 768px) {
           .sn-topbar-tabs { display: flex; }
 
-          /* page takes exactly the viewport below the topbar — no page scroll */
+          /* page is a fixed viewport below the topbar */
           .sn-page {
             position: fixed;
             top: 58px; left: 0; right: 0; bottom: 0;
             padding-top: 0;
-            max-width: 100%;
             overflow: hidden;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
           }
 
-          /* inner wrapper caps width and fills full height */
+          /* inner row: full height, max width cap */
           .sn-page-inner {
             display: flex;
             width: 100%;
             max-width: 1280px;
             height: 100%;
-            align-items: flex-start;
           }
 
-          /* both sidebars: fill height, don't scroll */
+          /* left sidebar: fixed, scrolls internally */
           .sn-sidebar {
             display: flex; flex-direction: column;
             width: 240px; flex-shrink: 0;
@@ -1537,7 +1556,7 @@ function Shell({ children }) {
           }
           .sn-sidebar::-webkit-scrollbar { display: none; }
 
-          /* center: flex column — compose frozen top, feed scrolls below */
+          /* center column: compose pinned, feed scrolls */
           .sn-main {
             flex: 1;
             max-width: 820px;
@@ -1547,9 +1566,11 @@ function Shell({ children }) {
             overflow: hidden;
           }
           .sn-compose-wrap {
+            position: static;
             flex-shrink: 0;
             padding: 12px 0 0;
             background: #EFF6FF;
+            z-index: auto;
           }
           .sn-feed-area {
             flex: 1;
@@ -1559,8 +1580,9 @@ function Shell({ children }) {
           }
           .sn-feed-area::-webkit-scrollbar { display: none; }
 
-          /* right panel: fixed height, scrolls internally if needed */
+          /* right panel: fixed, scrolls internally */
           .sn-right-panel {
+            display: flex; flex-direction: column;
             width: 220px; flex-shrink: 0;
             height: 100%;
             overflow-y: auto; padding: 16px 10px;
@@ -1569,6 +1591,7 @@ function Shell({ children }) {
           }
           .sn-right-panel::-webkit-scrollbar { display: none; }
 
+          /* hide mobile-only elements */
           .sn-fab { display: none !important; }
           .sn-bottom-nav { display: none !important; }
         }

@@ -632,7 +632,7 @@ const FILTERS = [
   { key: "groups", label: "הקבוצות שלי" },
 ];
 
-function Feed({ data, me, myLoc, onLike, openStatus, openRequest, report, openUser, catFilter, setCatFilter }) {
+function Feed({ data, me, myLoc, onLike, openStatus, openRequest, report, openUser, catFilter, setCatFilter, newCount, onRefresh }) {
   const [filter, setFilter] = useState("nearby");
   const [loading, setLoading] = useState(true);
   useEffect(() => { setLoading(true); const t = setTimeout(() => setLoading(false), 450); return () => clearTimeout(t); }, [filter, catFilter]);
@@ -655,6 +655,19 @@ function Feed({ data, me, myLoc, onLike, openStatus, openRequest, report, openUs
 
   return (
     <div>
+      {/* new posts banner */}
+      {newCount > 0 && (
+        <button onClick={onRefresh} style={{
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+          width: "100%", border: "none", background: T.brand, color: "#fff",
+          padding: "10px 16px", borderRadius: 12, fontSize: 14, fontWeight: 700,
+          cursor: "pointer", marginBottom: 10, fontFamily: "inherit",
+          boxShadow: `0 4px 14px ${T.brand}44`, animation: "snUp .25s ease",
+        }}>
+          <Sparkles size={16} /> {newCount} עדכון{newCount !== 1 ? "ים" : ""} חדש{newCount !== 1 ? "ים" : ""} — לחץ לרענון
+        </button>
+      )}
+
       {/* filter row */}
       <div style={{ position: "sticky", top: 0, zIndex: 5, background: T.bg, paddingTop: 4 }}>
         <div className="sn-scroll-x" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 10 }}>
@@ -1242,17 +1255,72 @@ function BottomNav({ tab, setTab, onCreate }) {
 }
 
 /* ============================================================
+   PERSISTENCE HELPERS
+   ============================================================ */
+const LS_SESSION = "sn_session_v1";
+const LS_DATA    = "sn_data_v1";
+
+function loadSession() {
+  try { return JSON.parse(localStorage.getItem(LS_SESSION)) || {}; } catch { return {}; }
+}
+function saveSession(obj) {
+  try { localStorage.setItem(LS_SESSION, JSON.stringify(obj)); } catch {}
+}
+function loadData() {
+  try {
+    const raw = localStorage.getItem(LS_DATA);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    // Merge saved user-created content on top of seed data
+    // to keep seed photos/example posts intact
+    const seed = seedData();
+    return {
+      users:    [...seed.users,    ...(d.users    || []).filter(u => !seed.users.find(x=>x.id===u.id))],
+      statuses: [...(d.statuses || seed.statuses)],
+      requests: [...(d.requests || seed.requests)],
+      groups:   [...(d.groups   || seed.groups)],
+    };
+  } catch { return null; }
+}
+function saveData(d) {
+  try {
+    // Only persist user-added content on top of seed, to keep size small
+    const seed = seedData();
+    const seedStatusIds = new Set(seed.statuses.map(s=>s.id));
+    const seedReqIds    = new Set(seed.requests.map(r=>r.id));
+    const seedUserIds   = new Set(seed.users.map(u=>u.id));
+    localStorage.setItem(LS_DATA, JSON.stringify({
+      statuses: d.statuses, // save all (includes seed + new)
+      requests: d.requests,
+      groups:   d.groups,
+      users:    d.users.filter(u => !seedUserIds.has(u.id)), // only new users
+    }));
+  } catch {}
+}
+
+/* ============================================================
    ROOT APP
    ============================================================ */
 export default function App() {
-  const [authed, setAuthed] = useState(false);
+  // ── Session (survives page refresh) ──────────────────────────
+  const savedSession = loadSession();
+  const [authed, setAuthed] = useState(savedSession.authed || false);
   const [authScreen, setAuthScreen] = useState("login");
-  const [data, setData] = useState(seedData);
-  const [meId, setMeId] = useState("u_me");
+  const [meId, setMeId] = useState(savedSession.meId || "u_me");
+
+  // ── Data (survives page refresh) ─────────────────────────────
+  const [data, setData] = useState(() => loadData() || seedData());
+
+  // Persist data whenever it changes
+  useEffect(() => { saveData(data); }, [data]);
+
+  // Persist session whenever authed/meId changes
+  useEffect(() => { saveSession({ authed, meId }); }, [authed, meId]);
+
   const me = data.users.find((u) => u.id === meId) || data.users[0];
 
   const [tab, setTab] = useState("feed");
-  const [modal, setModal] = useState(null); // {type,...}
+  const [modal, setModal] = useState(null);
   const [viewGroup, setViewGroup] = useState(null);
   const [viewUser, setViewUser] = useState(null);
   const [presetGroupForPost, setPresetGroupForPost] = useState(null);
@@ -1260,6 +1328,26 @@ export default function App() {
   const [myLoc, setMyLoc] = useState(null);
   const [askedLoc, setAskedLoc] = useState(false);
   const [catFilter, setCatFilter] = useState(null);
+
+  // ── New-posts indicator ───────────────────────────────────────
+  const [newCount, setNewCount] = useState(0);
+  const lastSeenRef = useRef(now());
+  const checkNew = () => {
+    const fresh = data.statuses.filter(s => s.createdAt > lastSeenRef.current).length;
+    setNewCount(fresh);
+  };
+  // Poll every 30s (simulated — in production this would be a websocket/SSE)
+  useEffect(() => {
+    const i = setInterval(checkNew, 30000);
+    return () => clearInterval(i);
+  }, [data.statuses]);
+
+  const handleRefresh = () => {
+    lastSeenRef.current = now();
+    setNewCount(0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    showToast("הפיד עודכן ✓");
+  };
 
   const [toast, setToast] = useState(null);
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2600); };
@@ -1275,6 +1363,15 @@ export default function App() {
 
   // no location prompt — user location is optional
   useEffect(() => { if (authed && !askedLoc) { setAskedLoc(true); } }, [authed]);
+
+  /* ---- data mutations ---- */
+  const handleLogout = () => {
+    saveSession({ authed: false, meId: "u_me" });
+    setAuthed(false);
+    setAuthScreen("login");
+    setViewUser(null);
+    setTab("feed");
+  };
 
   /* ---- data mutations ---- */
   const likeStatus = (id) => setData((d) => ({ ...d, statuses: d.statuses.map((s) => s.id === id ? { ...s, likes: s.likes.includes(meId) ? s.likes.filter((x) => x !== meId) : [...s.likes, meId] } : s) }));
@@ -1297,8 +1394,8 @@ export default function App() {
   /* ---------- render auth ---------- */
   if (!authed) {
     const handleLogin = (userInfo) => {
+      let newMeId = "u_me";
       if (userInfo && userInfo.name) {
-        // Create a new user record for this session
         const newId = uid();
         const newUser = {
           id: newId,
@@ -1310,10 +1407,12 @@ export default function App() {
           reputation: 0,
         };
         setData(d => ({ ...d, users: [...d.users, newUser] }));
+        newMeId = newId;
         setMeId(newId);
       }
       setAuthed(true);
       setTab("feed");
+      saveSession({ authed: true, meId: newMeId });
     };
     const props = { go: setAuthScreen, onLogin: handleLogin, toast: showToast };
     return (
@@ -1334,13 +1433,13 @@ export default function App() {
 
   /* ---------- main screens ---------- */
   let screen = null;
-  if (tab === "feed") screen = <Feed data={data} me={me} myLoc={myLoc} onLike={likeStatus} openStatus={openStatus} openRequest={openRequest} report={report} openUser={openUser} catFilter={catFilter} setCatFilter={setCatFilter} />;
+  if (tab === "feed") screen = <Feed data={data} me={me} myLoc={myLoc} onLike={likeStatus} openStatus={openStatus} openRequest={openRequest} report={report} openUser={openUser} catFilter={catFilter} setCatFilter={setCatFilter} newCount={newCount} onRefresh={handleRefresh} />;
   else if (tab === "map") screen = <MapView data={data} me={me} myLoc={myLoc} openStatus={openStatus} openRequest={openRequest} catFilter={catFilter} setCatFilter={setCatFilter} />;
   else if (tab === "requests") screen = <Requests data={data} me={me} myLoc={myLoc} openRequest={openRequest} report={report} openUser={openUser} />;
   else if (tab === "groups") screen = viewGroup
     ? <GroupFeed g={data.groups.find((g) => g.id === viewGroup)} data={data} me={me} myLoc={myLoc} onLike={likeStatus} openStatus={openStatus} report={report} openUser={openUser} back={() => setViewGroup(null)} onPost={(gid) => { setPresetGroupForPost(gid); setModal({ type: "createStatus" }); }} />
     : <Groups data={data} me={me} onJoin={joinGroup} openGroup={(id) => setViewGroup(id)} openCreateGroup={() => setModal({ type: "createGroup" })} />;
-  else if (tab === "profile") { const u = data.users.find((x) => x.id === (viewUser || meId)); screen = <Profile user={u} data={data} me={me} myLoc={myLoc} isMe={!viewUser || viewUser === meId} onLogout={() => { setAuthed(false); setAuthScreen("login"); setViewUser(null); }} openStatus={openStatus} openRequest={openRequest} openGroup={(id) => setViewGroup(id)} />; }
+  else if (tab === "profile") { const u = data.users.find((x) => x.id === (viewUser || meId)); screen = <Profile user={u} data={data} me={me} myLoc={myLoc} isMe={!viewUser || viewUser === meId} onLogout={handleLogout} openStatus={openStatus} openRequest={openRequest} openGroup={(id) => setViewGroup(id)} />; }
 
   const titles = { feed: "Status Now", map: "מפת אירועים", requests: "בקשות מידע", groups: viewGroup ? "קבוצה" : "קבוצות", profile: viewUser && viewUser !== meId ? "פרופיל" : "הפרופיל שלי" };
 
@@ -1401,7 +1500,7 @@ export default function App() {
             ))}
           </nav>
           <div className="sn-nav-divider" style={{marginTop:"auto"}}/>
-          <button className="sn-nav-btn" style={{color:"#EF4444",marginTop:"auto"}} onClick={()=>{setAuthed(false);setAuthScreen("login");}}>
+          <button className="sn-nav-btn" style={{color:"#EF4444",marginTop:"auto"}} onClick={handleLogout}>
             <span className="sn-nav-icon" style={{background:"#FEF2F2"}}><LogOut size={17} color="#EF4444"/></span>
             התנתקות
           </button>

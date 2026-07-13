@@ -299,16 +299,26 @@ function Login({ go, onLogin, toast }) {
   return (
     <AuthShell>
       <div style={{ fontSize: 19, fontWeight: 900, marginBottom: 2, color: T.ink }}>התחברות</div>
-      <div style={{ fontSize: 13, color: T.inkSoft, marginBottom: 16 }}>שמחים שחזרת 👋</div>
-      <div style={{ background: `${T.brand}12`, color: T.brandInk, borderRadius: 12, padding: "10px 12px", fontSize: 12.5, lineHeight: 1.5, marginBottom: 16 }}>
-        בשלב זה ההתחברות פתוחה — אפשר להיכנס גם בלי שם משתמש או סיסמה.
+      <div style={{ fontSize: 13, color: T.inkSoft, marginBottom: 20 }}>שמחים שחזרת 👋</div>
+
+      <SocialBtn color="#DB4437" onClick={() => { setLoading(true); setTimeout(() => { setLoading(false); onLogin({ name:"משתמש גוגל", provider:"google" }); }, 600); }}
+        icon={<svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.5 30.3 0 24 0 14.6 0 6.6 5.5 2.7 13.5l7.8 6C12.4 13.1 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.5 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.5-2 15.3-5.5l-7.5-5.8c-2.1 1.4-4.7 2.3-7.8 2.3-6.3 0-11.6-3.6-13.5-8.8l-7.8 6.1C6.6 42.5 14.6 48 24 48z"/></svg>}
+      >המשך עם Google</SocialBtn>
+
+      <SocialBtn color="#0D9488" onClick={() => { setLoading(true); setTimeout(() => { setLoading(false); onLogin({ name: randomAnon(), provider:"anon" }); }, 400); }}
+        icon={<span style={{fontSize:18}}>🎭</span>}
+      >כניסה אנונימית</SocialBtn>
+
+      <div style={{ display:"flex", alignItems:"center", gap:10, margin:"4px 0 14px" }}>
+        <div style={{ flex:1, height:1, background:T.line }}/><span style={{ fontSize:12.5, color:T.inkFaint }}>או עם אימייל</span><div style={{ flex:1, height:1, background:T.line }}/>
       </div>
-      <Field label="שם משתמש / אימייל (רשות)">
-        <input style={inputStyle} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="אפשר להשאיר ריק" dir="ltr" />
+
+      <Field label="אימייל">
+        <input style={inputStyle} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" dir="ltr" />
       </Field>
-      <Field label="סיסמה (רשות)">
+      <Field label="סיסמה">
         <div style={{ position: "relative" }}>
-          <input style={{ ...inputStyle, paddingInlineEnd: 42 }} type={show ? "text" : "password"} value={pw} onChange={(e) => setPw(e.target.value)} dir="ltr" placeholder="אפשר להשאיר ריק" />
+          <input style={{ ...inputStyle, paddingInlineEnd: 42 }} type={show ? "text" : "password"} value={pw} onChange={(e) => setPw(e.target.value)} dir="ltr" />
           <button onClick={() => setShow(!show)} style={{ position: "absolute", insetInlineEnd: 12, top: 12, border: "none", background: "none", color: T.inkFaint, cursor: "pointer" }}>
             {show ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -317,7 +327,7 @@ function Login({ go, onLogin, toast }) {
       <div style={{ textAlign: "end", marginBottom: 14 }}>
         <button onClick={() => go("forgot")} style={{ border: "none", background: "none", color: T.brand, fontWeight: 700, fontSize: 13, cursor: "pointer" }}>שכחת סיסמה?</button>
       </div>
-      <PrimaryButton onClick={submit} disabled={loading}>{loading ? "מתחבר…" : "כניסה"}</PrimaryButton>
+      <PrimaryButton onClick={submit} disabled={loading}>{loading ? "מתחבר…" : "כניסה עם אימייל"}</PrimaryButton>
       <div style={{ textAlign: "center", marginTop: 16, fontSize: 13.5, color: T.inkSoft }}>
         אין לך חשבון? <button onClick={() => go("register")} style={{ border: "none", background: "none", color: T.brand, fontWeight: 800, cursor: "pointer" }}>הרשמה</button>
       </div>
@@ -325,40 +335,93 @@ function Login({ go, onLogin, toast }) {
   );
 }
 
+// Random anonymous nicknames
+const ANON_NAMES = ["ארנב מהיר","דג זהב","ברדלס סקרן","פרפר כחול","שועל חרמוני","דב צפוני","נמר שקט","זאב ירושלמי","עורב פיקח","צבי מהיר","דולפין שמח","נשר גבוה","קיפוד קטן","לוויתן כחול","חתול פרסי"];
+const randomAnon = () => ANON_NAMES[Math.floor(Math.random() * ANON_NAMES.length)];
+
+function SocialBtn({ onClick, icon, children, color }) {
+  return (
+    <button onClick={onClick} style={{
+      width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+      border: `1.5px solid ${color}33`, background: color + "0D", borderRadius: 12,
+      padding: "11px 16px", fontSize: 14.5, fontWeight: 700, color, cursor: "pointer",
+      fontFamily: "inherit", marginBottom: 10, transition: "all .12s",
+    }}
+      onMouseEnter={e => { e.currentTarget.style.background = color + "18"; }}
+      onMouseLeave={e => { e.currentTarget.style.background = color + "0D"; }}
+    >{icon}{children}</button>
+  );
+}
+
 function Register({ go, onLogin }) {
-  const [f, setF] = useState({ name: "", email: "", city: "תל אביב", pw: "", pw2: "" });
+  const [mode, setMode] = useState("choose"); // choose | email
+  const [f, setF] = useState({ name: "", email: "", pw: "", pw2: "" });
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
   const up = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
-  const submit = () => {
+  const loginWith = (name, provider) => {
+    setLoading(true);
+    setTimeout(() => { setLoading(false); onLogin({ name, provider }); }, 600);
+  };
+
+  const submitEmail = () => {
     setErr("");
-    if (f.name.trim().length < 2) return setErr("נא להזין שם מלא");
+    if (f.name.trim().length < 2) return setErr("נא להזין שם או כינוי (לפחות 2 תווים)");
     if (!f.email.includes("@")) return setErr("כתובת אימייל לא תקינה");
     if (f.pw.length < 6) return setErr("סיסמה קצרה מדי (לפחות 6 תווים)");
     if (f.pw !== f.pw2) return setErr("הסיסמאות אינן תואמות");
-    setLoading(true);
-    setTimeout(() => { setLoading(false); onLogin({ name: f.name.trim(), city: f.city }); }, 800);
+    loginWith(f.name.trim(), "email");
   };
 
   return (
     <AuthShell>
       <div style={{ fontSize: 19, fontWeight: 900, marginBottom: 2 }}>הרשמה</div>
-      <div style={{ fontSize: 13, color: T.inkSoft, marginBottom: 18 }}>הצטרפו לקהילה שמעדכנת בזמן אמת</div>
-      <Field label="שם מלא"><input style={inputStyle} value={f.name} onChange={up("name")} placeholder="ישראל ישראלי" /></Field>
-      <Field label="אימייל"><input style={inputStyle} value={f.email} onChange={up("email")} placeholder="name@example.com" dir="ltr" /></Field>
-      <Field label="עיר / אזור">
-        <select style={inputStyle} value={f.city} onChange={up("city")}>
-          {CITIES.map((c) => <option key={c.name}>{c.name}</option>)}
-        </select>
-      </Field>
-      <Field label="סיסמה"><input style={inputStyle} type="password" value={f.pw} onChange={up("pw")} dir="ltr" /></Field>
-      <Field label="אימות סיסמה"><input style={inputStyle} type="password" value={f.pw2} onChange={up("pw2")} dir="ltr" /></Field>
-      {err && <div style={{ background: "#FEECEC", color: T.live, borderRadius: 10, padding: "9px 12px", fontSize: 13, marginBottom: 12, fontWeight: 600 }}>{err}</div>}
-      <PrimaryButton onClick={submit} disabled={loading}>{loading ? "יוצר חשבון…" : "יצירת חשבון"}</PrimaryButton>
-      <div style={{ textAlign: "center", marginTop: 16, fontSize: 13.5, color: T.inkSoft }}>
-        כבר רשום? <button onClick={() => go("login")} style={{ border: "none", background: "none", color: T.brand, fontWeight: 800, cursor: "pointer" }}>התחברות</button>
-      </div>
+      <div style={{ fontSize: 13, color: T.inkSoft, marginBottom: 20 }}>הצטרפו לקהילה שמעדכנת בזמן אמת</div>
+
+      {mode === "choose" ? (
+        <>
+          {/* Google */}
+          <SocialBtn color="#DB4437" onClick={() => loginWith("משתמש גוגל", "google")}
+            icon={<svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.5 30.3 0 24 0 14.6 0 6.6 5.5 2.7 13.5l7.8 6C12.4 13.1 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.5 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.5-2 15.3-5.5l-7.5-5.8c-2.1 1.4-4.7 2.3-7.8 2.3-6.3 0-11.6-3.6-13.5-8.8l-7.8 6.1C6.6 42.5 14.6 48 24 48z"/></svg>}
+          >המשך עם Google</SocialBtn>
+
+          {/* Anonymous */}
+          <SocialBtn color="#0D9488" onClick={() => loginWith(randomAnon(), "anon")}
+            icon={<span style={{fontSize:18}}>🎭</span>}
+          >כניסה אנונימית (כינוי אקראי)</SocialBtn>
+
+          {/* Divider */}
+          <div style={{ display:"flex", alignItems:"center", gap:10, margin:"4px 0 14px" }}>
+            <div style={{ flex:1, height:1, background:T.line }}/>
+            <span style={{ fontSize:12.5, color:T.inkFaint }}>או</span>
+            <div style={{ flex:1, height:1, background:T.line }}/>
+          </div>
+
+          {/* Email */}
+          <PrimaryButton onClick={() => setMode("email")} style={{ background: T.surface, color: T.ink, border: `1.5px solid ${T.line}`, boxShadow:"none" }}>
+            הרשמה עם אימייל
+          </PrimaryButton>
+
+          <div style={{ textAlign: "center", marginTop: 16, fontSize: 13.5, color: T.inkSoft }}>
+            כבר רשום? <button onClick={() => go("login")} style={{ border:"none", background:"none", color:T.brand, fontWeight:800, cursor:"pointer" }}>התחברות</button>
+          </div>
+        </>
+      ) : (
+        <>
+          <button onClick={() => setMode("choose")} style={{ border:"none", background:"none", color:T.inkSoft, display:"inline-flex", alignItems:"center", gap:4, cursor:"pointer", marginBottom:14, fontSize:13.5 }}>
+            <ArrowLeft size={15}/> חזרה
+          </button>
+          <Field label="שם או כינוי" hint="יוצג בפרסומים שלך — אפשר גם כינוי">
+            <input style={inputStyle} value={f.name} onChange={up("name")} placeholder="למשל: טל כ., רץ בוקר, אנונימי42" />
+          </Field>
+          <Field label="אימייל"><input style={inputStyle} value={f.email} onChange={up("email")} placeholder="name@example.com" dir="ltr" /></Field>
+          <Field label="סיסמה"><input style={inputStyle} type="password" value={f.pw} onChange={up("pw")} dir="ltr" /></Field>
+          <Field label="אימות סיסמה"><input style={inputStyle} type="password" value={f.pw2} onChange={up("pw2")} dir="ltr" /></Field>
+          {err && <div style={{ background:"#FEECEC", color:T.live, borderRadius:10, padding:"9px 12px", fontSize:13, marginBottom:12, fontWeight:600 }}>{err}</div>}
+          <PrimaryButton onClick={submitEmail} disabled={loading}>{loading ? "יוצר חשבון…" : "יצירת חשבון"}</PrimaryButton>
+        </>
+      )}
     </AuthShell>
   );
 }
@@ -1173,8 +1236,8 @@ export default function App() {
   const [authed, setAuthed] = useState(false);
   const [authScreen, setAuthScreen] = useState("login");
   const [data, setData] = useState(seedData);
-  const [meId] = useState("u_me");
-  const me = data.users.find((u) => u.id === meId);
+  const [meId, setMeId] = useState("u_me");
+  const me = data.users.find((u) => u.id === meId) || data.users[0];
 
   const [tab, setTab] = useState("feed");
   const [modal, setModal] = useState(null); // {type,...}
@@ -1198,8 +1261,8 @@ export default function App() {
   const [, setTick] = useState(0);
   useEffect(() => { const i = setInterval(() => setTick((t) => t + 1), 30000); return () => clearInterval(i); }, []);
 
-  // skip location prompt — go straight in
-  useEffect(() => { if (authed && !askedLoc) { setAskedLoc(true); setMyLoc({ ...CITIES[0], name: "תל אביב" }); } }, [authed]);
+  // no location prompt — user location is optional
+  useEffect(() => { if (authed && !askedLoc) { setAskedLoc(true); } }, [authed]);
 
   /* ---- data mutations ---- */
   const likeStatus = (id) => setData((d) => ({ ...d, statuses: d.statuses.map((s) => s.id === id ? { ...s, likes: s.likes.includes(meId) ? s.likes.filter((x) => x !== meId) : [...s.likes, meId] } : s) }));
@@ -1221,7 +1284,26 @@ export default function App() {
 
   /* ---------- render auth ---------- */
   if (!authed) {
-    const props = { go: setAuthScreen, onLogin: () => { setAuthed(true); setTab("feed"); }, toast: showToast };
+    const handleLogin = (userInfo) => {
+      if (userInfo && userInfo.name) {
+        // Create a new user record for this session
+        const newId = uid();
+        const newUser = {
+          id: newId,
+          name: userInfo.name,
+          color: AVCOLORS[Math.floor(Math.random() * AVCOLORS.length)],
+          bio: userInfo.provider === "anon" ? "משתמש אנונימי 🎭" : userInfo.provider === "google" ? "מחובר דרך Google" : "משתמש חדש",
+          city: "",
+          lat: CITIES[0].lat, lng: CITIES[0].lng,
+          reputation: 0,
+        };
+        setData(d => ({ ...d, users: [...d.users, newUser] }));
+        setMeId(newId);
+      }
+      setAuthed(true);
+      setTab("feed");
+    };
+    const props = { go: setAuthScreen, onLogin: handleLogin, toast: showToast };
     return (
       <Shell>
         {authScreen === "login" && <Login {...props} />}

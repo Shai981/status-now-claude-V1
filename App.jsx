@@ -668,22 +668,6 @@ function Feed({ data, me, myLoc, onLike, openStatus, openRequest, report, openUs
         </button>
       )}
 
-      {/* filter row */}
-      <div style={{ position: "sticky", top: 0, zIndex: 5, background: T.bg, paddingTop: 4 }}>
-        <div className="sn-scroll-x" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 10 }}>
-          {FILTERS.map((f) => (
-            <button key={f.key} onClick={() => setFilter(f.key)} style={chipBtn(filter === f.key)}>{f.label}</button>
-          ))}
-        </div>
-        <div className="sn-scroll-x" style={{ display: "flex", gap: 7, overflowX: "auto", paddingBottom: 12 }}>
-          <button onClick={() => setCatFilter(null)} style={catBtn(!catFilter)}>הכל</button>
-          {CAT_KEYS.map((k) => (
-            <button key={k} onClick={() => setCatFilter(catFilter === k ? null : k)} style={catBtn(catFilter === k, CATEGORIES[k].color)}>
-              {React.createElement(CATEGORIES[k].Icon, { size: 13, strokeWidth: 2.4 })}{CATEGORIES[k].short}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {loading ? <Spinner label="טוען עדכונים לידך…" /> : items.length === 0 ? (
         <Empty icon="📍" title="אין עדכונים כרגע" sub="היה הראשון לדווח מה קורה באזורך — לחץ על ➕ למטה." />
